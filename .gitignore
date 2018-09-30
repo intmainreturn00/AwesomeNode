@@ -63,3 +63,8 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+
+cocos2d
+proj.ios_mac
+proj.linux
+proj.win32
