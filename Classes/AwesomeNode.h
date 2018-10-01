@@ -155,13 +155,13 @@ public:
 
         if (angle1 > 0) {
             // up case - inner. need to add join triangle to convex (down)
-            //drawTriangle(B4, B2, B, Color4B::BLUE, Color4B::BLUE, Color4B::BLUE);
-            drawTriangle(B4, B2, B, main, main, main);
+            drawTriangle(B4, B2, B, Color4B::BLUE, Color4B::BLUE, Color4B::BLUE);
+//            drawTriangle(B4, B2, B, main, main, main);
 
         } else {
             // down case - inner. need to add join triangle to convex (up)
-            //drawTriangle(B1, B3, B, Color4B::BLUE, Color4B::BLUE, Color4B::BLUE);
-            drawTriangle(B1, B3, B, main, main, main);
+            drawTriangle(B1, B3, B, Color4B::BLUE, Color4B::BLUE, Color4B::BLUE);
+//            drawTriangle(B1, B3, B, main, main, main);
 
         }
 
@@ -181,15 +181,15 @@ public:
 
         if (angle1 > 0) {
             // up case - inner.
-            //drawTriangle(Bb4, B4, B2, testA, test, test);
-            //drawTriangle(Bb4, B2, Bb2, testA, test, testA);
-            drawTriangle(Bb4, B4, B2, border, main, main);
-            drawTriangle(Bb4, B2, Bb2, border, main, border);
+            drawTriangle(Bb4, B4, B2, testA, test, test);
+            drawTriangle(Bb4, B2, Bb2, testA, test, testA);
+//            drawTriangle(Bb4, B4, B2, border, main, main);
+//            drawTriangle(Bb4, B2, Bb2, border, main, border);
         } else {
-            //drawTriangle(B1, Bb1, Bb3, test, testA, testA);
-            //drawTriangle(B1, Bb3, B3, test, testA, test);
-            drawTriangle(B1, Bb1, Bb3, main, border, border);
-            drawTriangle(B1, Bb3, B3, main, border, main);
+            drawTriangle(B1, Bb1, Bb3, test, testA, testA);
+            drawTriangle(B1, Bb3, B3, test, testA, test);
+//            drawTriangle(B1, Bb1, Bb3, main, border, border);
+//            drawTriangle(B1, Bb3, B3, main, border, main);
         }
 
 
@@ -205,8 +205,8 @@ public:
         /*drawTriangle(Ab1, A1, Bb1, border, main, border);
         drawTriangle(A1, Bb1, B1, main, border, main);*/
 
-        //drawTriangle(Ab1, A1, Bb1, test2A, test2, test2A);
-        //drawTriangle(A1, Bb1, B1, test2, test2A, test2);
+        drawTriangle(Ab1, A1, Bb1, test2A, test2, test2A);
+        drawTriangle(A1, Bb1, B1, test2, test2A, test2);
 
 
         Vec2 b13((n1.x + n3.x), (n1.y + n3.y));
@@ -220,38 +220,38 @@ public:
         Vec2 K3(B.x + b24.x * (W), B.y + b24.y * (W)),
                 K4(B.x + b24.x * (W + w), B.y + b24.y * (W + w));
 
-        /*drawPoint(K, 4, Color4F::BLUE);
+        drawPoint(K, 4, Color4F::BLUE);
         drawPoint(K2, 4, Color4F::BLUE);
         drawPoint(K3, 4, Color4F::BLUE);
-        drawPoint(K4, 4, Color4F::BLUE);*/
+        drawPoint(K4, 4, Color4F::BLUE);
 
         if (angle1 > 0) {
             // up - inner.
 
             if (prevUPStatus == -1) {
-                //drawTriangle(Ab1, A1, K2, test2A, test2, test2A);
-                //drawTriangle(A1, K2, K, test2, test2A, test2);
-                drawTriangle(Ab1, A1, K2, border, main, border);
-                drawTriangle(A1, K2, K, main, border, main);
+                drawTriangle(Ab1, A1, K2, test2A, test2, test2A);
+                drawTriangle(A1, K2, K, test2, test2A, test2);
+//                drawTriangle(Ab1, A1, K2, border, main, border);
+//                drawTriangle(A1, K2, K, main, border, main);
             } else {
-                //drawTriangle(GK2, GK, K2, test2A, test2, test2A);
-                //drawTriangle(GK, K2, K, test2, test2A, test2);
-                drawTriangle(GK2, GK, K2, border, main, border);
-                drawTriangle(GK, K2, K, main, border, main);
+                drawTriangle(GK2, GK, K2, test2A, test2, test2A);
+                drawTriangle(GK, K2, K, test2, test2A, test2);
+//                drawTriangle(GK2, GK, K2, border, main, border);
+//                drawTriangle(GK, K2, K, main, border, main);
             }
 
 
             //down - convex
             if (prevUPStatus == -1) {
-                //drawTriangle(Ab2, A2, B2, test2A, test2, test2);
-                //drawTriangle(Ab2, B2, Bb2, test2A, test2, test2A);
-                drawTriangle(Ab2, A2, B2, border, main, main);
-                drawTriangle(Ab2, B2, Bb2, border, main, border);
+                drawTriangle(Ab2, A2, B2, test2A, test2, test2);
+                drawTriangle(Ab2, B2, Bb2, test2A, test2, test2A);
+//                drawTriangle(Ab2, A2, B2, border, main, main);
+//                drawTriangle(Ab2, B2, Bb2, border, main, border);
             } else {
-                //drawTriangle(GK4, GK3, B2, test2A, test2, test2);
-                //drawTriangle(GK4, B2, Bb2, test2A, test2, test2A);
-                drawTriangle(GK4, GK3, B2, border, main, main);
-                drawTriangle(GK4, B2, Bb2, border, main, border);
+                drawTriangle(GK4, GK3, B2, test2A, test2, test2);
+                drawTriangle(GK4, B2, Bb2, test2A, test2, test2A);
+//                drawTriangle(GK4, GK3, B2, border, main, main);
+//                drawTriangle(GK4, B2, Bb2, border, main, border);
             }
 
 
@@ -265,10 +265,10 @@ public:
         } else {
             // up - convex
             if (prevUPStatus == -1) {
-                /*drawTriangle(Ab1, A1, Bb1, test2A, test2, test2A);
-                drawTriangle(A1, Bb1, B1, test2, test2A, test2);*/
-                drawTriangle(Ab1, A1, Bb1, border, main, border);
-                drawTriangle(A1, Bb1, B1, main, border, main);
+                drawTriangle(Ab1, A1, Bb1, test2A, test2, test2A);
+                drawTriangle(A1, Bb1, B1, test2, test2A, test2);
+//                drawTriangle(Ab1, A1, Bb1, border, main, border);
+//                drawTriangle(A1, Bb1, B1, main, border, main);
             } else {
                 drawTriangle(GK2, GK, Bb1, border, main, border);
                 drawTriangle(GK, Bb1, B1, main, border, main);
@@ -278,15 +278,15 @@ public:
             //drawTriangle(Ab2, A2, K3, test3A, test3, test3);
             //drawTriangle(Ab2, K3, K4, test2A, test2, test2A);
             if (prevUPStatus == -1) {
-                /*drawTriangle(Ab2, A2, K3, test3A, test3, test3);
-                drawTriangle(Ab2, K3, K4, test2A, test2, test2A);*/
-                drawTriangle(Ab2, A2, K3, border, main, main);
-                drawTriangle(Ab2, K3, K4, border, main, border);
+                drawTriangle(Ab2, A2, K3, test3A, test3, test3);
+                drawTriangle(Ab2, K3, K4, test2A, test2, test2A);
+//                drawTriangle(Ab2, A2, K3, border, main, main);
+//                drawTriangle(Ab2, K3, K4, border, main, border);
             } else {
-                /*drawTriangle(GK4, GK3, K3, test3A, test3, test3);
-                drawTriangle(GK4, K3, K4, test2A, test2, test2A);*/
-                drawTriangle(GK4, GK3, K3, border, main, main);
-                drawTriangle(GK4, K3, K4, border, main, border);
+                drawTriangle(GK4, GK3, K3, test3A, test3, test3);
+                drawTriangle(GK4, K3, K4, test2A, test2, test2A);
+//                drawTriangle(GK4, GK3, K3, border, main, main);
+//                drawTriangle(GK4, K3, K4, border, main, border);
             }
 
 
@@ -306,8 +306,8 @@ public:
         /*drawTriangle(Ab2, A2, B2, border, main, main);
         drawTriangle(Ab2, B2, Bb2, border, main, border);*/
 
-        /*drawTriangle(Ab2, A2, B2, test3A, test3, test3);
-        drawTriangle(Ab2, B2, Bb2, test2A, test2, test2A);*/
+        drawTriangle(Ab2, A2, B2, test3A, test3, test3);
+        drawTriangle(Ab2, B2, Bb2, test2A, test2, test2A);
 
 
 
