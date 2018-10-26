@@ -19,23 +19,7 @@ public:
 
 	void setOpacity(GLubyte opacity);
 
-	//AwesomeNode() : W(width), w(borderWidth),
-	//	DrawNode() { /*_blendFunc = BlendFunc::ALPHA_PREMULTIPLIED;*/
-	//}
-
 	CREATE_FUNC(AwesomeNode);
-
-	/*static AwesomeNode *create(int width = 5, int borderWidth = 2) {
-		AwesomeNode *ret = new(std::nothrow) AwesomeNode(width, borderWidth);
-		if (ret && ret->init()) {
-			ret->autorelease();
-			return ret;
-		}
-		else {
-			delete ret;
-			return nullptr;
-		}
-	}*/
 
 	virtual bool init();
 
