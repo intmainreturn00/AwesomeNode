@@ -72,3 +72,4 @@ proj.win32/Debug*
 proj.win32/.vs*
 *.db
 *.opendb
+*ipch

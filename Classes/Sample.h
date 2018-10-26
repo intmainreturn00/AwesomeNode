@@ -11,14 +11,6 @@ public:
 
     CREATE_FUNC(Sample);
 
-    void drawPts();
-
     AwesomeNode *node = nullptr;
-    PointArray *pts = nullptr;
-    int step = -1;
-    int counter = 0;
-    float tension = 0;
-    int segments = 120;
-
 };
 
