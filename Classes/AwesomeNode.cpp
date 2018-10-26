@@ -56,8 +56,19 @@ void AwesomeNode::drawTriangle(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
 
 }
 
+void AwesomeNode::drawALine(const Vec2 & A, const Vec2 & B, const Color4B & color, int w)
+{
+	Vec2 p(B.x - A.x, B.y - A.y);
+	p.normalize();
+	Vec2 p1(-p.y, p.x), p2(p.y, -p.x);
+	Vec2 A1(A + p1 * w / 2), A2(A + p2 * w / 2);
+	Vec2 B1(B + p1 * w / 2), B2(B + p2 * w / 2);
+
+	drawLineSegment(A1, A, A2, B2, B, B1, color);
+}
+
 void AwesomeNode::drawLineSegment(const Vec2 & p1, const Vec2 & p2, const Vec2 &p3,
-	const Vec2 & p4, const Vec2 & p5, const Vec2 & p6, Color4B color)
+	const Vec2 & p4, const Vec2 & p5, const Vec2 & p6, const Color4B &color)
 {
 	Color4B border(color);
 	border.a = 0;
@@ -67,3 +78,4 @@ void AwesomeNode::drawLineSegment(const Vec2 & p1, const Vec2 & p2, const Vec2 &
 	drawTriangle(p2, p5, p3, color, color, border);
 	drawTriangle(p3, p5, p4, border, color, border);
 }
+

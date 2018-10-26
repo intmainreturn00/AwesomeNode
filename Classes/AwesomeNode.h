@@ -19,13 +19,13 @@ public:
 
 	void setOpacity(GLubyte opacity);
 
-	AwesomeNode(int width, int borderWidth) : W(width), w(borderWidth),
-		DrawNode() { /*_blendFunc = BlendFunc::ALPHA_PREMULTIPLIED;*/
-	}
+	//AwesomeNode() : W(width), w(borderWidth),
+	//	DrawNode() { /*_blendFunc = BlendFunc::ALPHA_PREMULTIPLIED;*/
+	//}
 
-	int W, w;
+	CREATE_FUNC(AwesomeNode);
 
-	static AwesomeNode *create(int width = 5, int borderWidth = 2) {
+	/*static AwesomeNode *create(int width = 5, int borderWidth = 2) {
 		AwesomeNode *ret = new(std::nothrow) AwesomeNode(width, borderWidth);
 		if (ret && ret->init()) {
 			ret->autorelease();
@@ -35,7 +35,7 @@ public:
 			delete ret;
 			return nullptr;
 		}
-	}
+	}*/
 
 	virtual bool init();
 
@@ -43,14 +43,18 @@ public:
 	void drawTriangle(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
 		const Color4B &color1, const Color4B &color2, const Color4B &color3);
 
-	/** draw tesselated (?) line segment */
-	void drawLineSegment(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
-		const Vec2 &p4, const Vec2 &p5, const Vec2 &p6, Color4B color);
+	/** draw anti-aliased line */
+	void drawALine(const Vec2 &A, const Vec2 &B, const Color4B &color, int w);
 
 private:
+
 	GLubyte opacity;
 
-	
-	
+	//int W, w;
+
+	/** draw tesselated (?) line segment */
+	void drawLineSegment(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
+		const Vec2 &p4, const Vec2 &p5, const Vec2 &p6, const Color4B &color);
+
 };
 

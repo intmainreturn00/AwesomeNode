@@ -17,15 +17,18 @@ bool Sample::init() {
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	Vec2 center(visibleSize.width / 2, visibleSize.height / 2);
 
-	node = AwesomeNode::create(10, 20);
+	node = AwesomeNode::create();
 
 	addChild(node);
 
 	/*node->drawTriangle(Vec2(200, 100), Vec2(400, 100), Vec2(200, 300),
 		Color4B::RED, Color4B::GREEN, Color4B::BLUE);*/
 
-	node->drawLineSegment(Vec2(200, 300), Vec2(200, 200), Vec2(200, 100), 
-		Vec2(400, 100), Vec2(400, 200), Vec2(350, 300), Color4B::GREEN);
+	/*node->drawLineSegment(Vec2(200, 300), Vec2(200, 200), Vec2(200, 100), 
+		Vec2(400, 100), Vec2(400, 200), Vec2(350, 300), Color4B::GREEN);*/
+
+
+	node->drawALine(Vec2(100, 200), Vec2(400, 200), Color4B::GREEN, 50);
 
 	return true;
 }
