@@ -12,5 +12,6 @@ public:
     CREATE_FUNC(Sample);
 
     AwesomeNode *node = nullptr;
+	PointArray *pts = nullptr;
 };
 

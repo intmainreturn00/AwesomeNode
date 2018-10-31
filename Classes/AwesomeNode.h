@@ -11,7 +11,7 @@
 
 USING_NS_CC;
 
-#define AWESOMEDEBUG
+//#define AWESOMEDEBUG
 
 class AwesomeNode : public DrawNode {
 
@@ -29,6 +29,9 @@ public:
 
 	/** draw anti-aliased line */
 	void drawALine(const Vec2 &A, const Vec2 &B, const Color4B &color, int w);
+
+	void drawACardinalSpline(PointArray *config, float tension, unsigned int segments, 
+		const Color4B &color, int w);
 
 private:
 
