@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion PROP_COMPILE_SDK_VERSION.toInteger()
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.owl.awesomenode"

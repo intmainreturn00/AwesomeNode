@@ -30,15 +30,17 @@ bool Sample::init() {
 
 	//node->drawALine(Vec2(100, 200), Vec2(400, 200), Color4B::GREEN, 50);
 
-	pts = PointArray::create(6);
+	pts = PointArray::create(5);
 	pts->retain();
-	pts->addControlPoint(Vec2(50, 150));
-	pts->addControlPoint(Vec2(150, 150));
-	pts->addControlPoint(Vec2(250, 250));
-	pts->addControlPoint(Vec2(350, 250));
-	pts->addControlPoint(Vec2(400, 300));
+	pts->addControlPoint(Vec2(50, 50));
+	pts->addControlPoint(Vec2(150, 50));
+	pts->addControlPoint(Vec2(250, 150));
+	pts->addControlPoint(Vec2(350, 150));
+	pts->addControlPoint(Vec2(400, 200));
 
-	node->drawACardinalSpline(pts, 0.5, 10, Color4B::GREEN, 30);
+	node->drawACardinalSpline(pts, 0.5, 30, Color4B::GREEN, 50);
+
+	node->drawALine(Vec2(50, 200), Vec2(350, 200), Color4B::GREEN, 20);
 
 	return true;
 }

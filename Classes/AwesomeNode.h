@@ -11,7 +11,7 @@
 
 USING_NS_CC;
 
-//#define AWESOMEDEBUG
+#define AWESOMEDEBUG
 
 class AwesomeNode : public DrawNode {
 
@@ -37,11 +37,23 @@ private:
 
 	GLubyte opacity;
 
-	//int W, w;
+	struct lineSegment {
+	    Vec2 A, A1, A2;
+        Vec2 B, B1, B2;
+	};
 
-	/** draw tesselated (?) line segment */
-	void drawLineSegment(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
-		const Vec2 &p4, const Vec2 &p5, const Vec2 &p6, const Color4B &color);
+	struct lineJoint {
+        lineSegment segment;
+        Vec2 B3, B4;
+        Vec2 K, K3;
+        bool up;
+	};
+
+    void drawLineSegment(const lineSegment & segment, const Color4B &color);
+
+    lineJoint calculateLineJoint(const Vec2 & A, const Vec2 & B, const Vec2 & C, int w);
+
+    lineSegment calculateLineSegment(const Vec2 & A, const Vec2 & B, int w);
 
 };
 

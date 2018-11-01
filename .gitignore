@@ -73,3 +73,5 @@ proj.win32/.vs*
 *.db
 *.opendb
 *ipch
+
+proj.android/.idea
