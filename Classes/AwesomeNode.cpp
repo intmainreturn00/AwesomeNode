@@ -53,7 +53,7 @@ void AwesomeNode::drawTriangle(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
     drawLine(p1, p2, Color4F::MAGENTA);
     drawLine(p2, p3, Color4F::MAGENTA);
     drawLine(p3, p1, Color4F::MAGENTA);
-#endif // AWESOMEDEBUG
+#endif
 
 }
 
@@ -74,7 +74,7 @@ void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigne
 
     ssize_t p;
     float lt;
-    float deltaT = 1.0f / config->count();
+    float deltaT = 1.0f / (config->count() - 1);
 
     for (unsigned int i = 0; i < segments + 1; i++) {
 
@@ -107,7 +107,7 @@ void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigne
         A2p = prevBorder.A2;
     }
 
-    for (int i = 2; i < segments; ++i) {
+    for (int i = 2; i <= segments; ++i) {
         lineJoint curBorder = calculateLineJoint(vertices[i - 2], vertices[i - 1], vertices[i], w);
 
         lineSegment segment = curBorder.segment;
@@ -134,10 +134,21 @@ void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigne
         }
     }
 
-    lineSegment lastSegment = calculateLineSegment(vertices[segments - 2], vertices[segments - 1], w);
+    lineSegment lastSegment = calculateLineSegment(vertices[segments - 1], vertices[segments], w);
     lastSegment.A1 = A1p;
     lastSegment.A2 = A2p;
     drawLineSegment(lastSegment, color);
+
+    // draw above
+#ifdef AWESOMEDEBUG
+    for (int i = 0; i < segments + 1; ++i) {
+        drawDot(vertices[i], 2, Color4F::BLUE);
+    }
+    for (int i = 0; i < config->count(); ++i) {
+        drawDot(config->getControlPointAtIndex(i), 3, Color4F::GREEN);
+    }
+#endif
+
 
     CC_SAFE_DELETE_ARRAY(vertices);
 }
