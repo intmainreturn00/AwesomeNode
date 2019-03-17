@@ -17,34 +17,47 @@ bool Sample::init() {
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     Vec2 center(visibleSize.width / 2, visibleSize.height / 2);
 
-    node = AwesomeNode::create();
+    awesomeNode = AwesomeNode::create();
+    justNode = DrawNode::create();
 
-    addChild(node);
+    addChild(awesomeNode);
+    addChild(justNode);
 
-    /*node->drawTriangle(Vec2(200, 100), Vec2(400, 100), Vec2(200, 300),
-        Color4B::RED, Color4B::GREEN, Color4B::BLUE);*/
+    auto button = Button::create("normal_image.png", "selected_image.png", "disabled_image.png");
 
-    /*node->drawLineSegment(Vec2(200, 300), Vec2(200, 200), Vec2(200, 100),
-        Vec2(400, 100), Vec2(400, 200), Vec2(350, 300), Color4B::GREEN);*/
+    button->setTitleText("awesome Node");
+    button->setTitleColor(Color3B::BLACK);
+    button->setZoomScale(1.2);
+
+    // set padding
+    button->ignoreContentAdaptWithSize(false);
+    button->setContentSize(Size(
+            button->getTitleRenderer()->getContentSize().width + 15,
+            button->getTitleRenderer()->getContentSize().height + 15)
+    );
+
+    button->setPosition(Vec2(visibleSize.width - 50, 50));
+
+    // set margin
+    LinearLayoutParameter* lp = LinearLayoutParameter::create();
+    button->setLayoutParameter(lp);
+    lp->setGravity(LinearLayoutParameter::LinearGravity::LEFT);
+    lp->setMargin(Margin(20, 20, 0, 0));
 
 
-    //node->drawALine(Vec2(100, 200), Vec2(400, 200), Color4B::GREEN, 50);
+    std::function<void()> fun = std::bind(&Sample::click, this);
+    button->addTouchEventListener([fun](Ref* sender, Widget::TouchEventType type) {
+        if (type == Widget::TouchEventType::ENDED) {
+            fun();
+        }
+    });
 
-//	pts = PointArray::create(5);
-//	pts->retain();
-//	pts->addControlPoint(Vec2(50, 50));
-//	pts->addControlPoint(Vec2(150, 50));
-//	pts->addControlPoint(Vec2(250, 150));
-//	pts->addControlPoint(Vec2(350, 150));
-//	pts->addControlPoint(Vec2(400, 200));
-//
-//	node->drawACardinalSpline(pts, 0.5, 30, Color4B::GREEN, 50);
-//
-//	node->drawALine(Vec2(50, 200), Vec2(350, 200), Color4B::GREEN, 20);
+    addChild(button);
+
 
     pts = PointArray::create(6);
     pts->retain();
-    int defY = center.y;
+    auto defY = (int)center.y;
     pts->addControlPoint(Vec2(50, defY + 50));
     pts->addControlPoint(Vec2(100, defY - 50));
     pts->addControlPoint(Vec2(150, defY + 50));
@@ -52,49 +65,38 @@ bool Sample::init() {
     pts->addControlPoint(Vec2(250, defY + 50));
     pts->addControlPoint(Vec2(350, defY + 50));
 
+    justNode->drawCardinalSpline(pts, 0.5, 360, Color4F::GREEN);
+    awesomeNode->drawACardinalSpline(pts, 0.5, 360, Color4B::GREEN, 2);
 
-    drawPts();
+    justNode->drawLine(Vec2(50, 50), Vec2(100, 100), Color4F::GREEN);
+    awesomeNode->drawALine(Vec2(50, 50), Vec2(100, 100), Color4B::GREEN, 2);
 
-    EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
-    listener->onTouchBegan = [&](Touch *touch, Event *event) {
-        return true;
-    };
+    justNode->drawTriangle(Vec2(200, 200), Vec2(250, 250), Vec2(300, 200), Color4F::GREEN);
+    awesomeNode->drawTriangle(Vec2(200, 200), Vec2(250, 250), Vec2(300, 200),
+            Color4B::GREEN, Color4B::RED, Color4B(0xff, 0, 0, 70));
 
-    listener->onTouchMoved = [&](Touch *touch, Event *event) {
-        Vec2 local = convertToNodeSpace(touch->getLocation());
-
-        // find closest to click point
-        int closestIndx = -1;
-        float closestDist = 100500;
-        for (int i = 0; i < pts->count(); ++i) {
-            float curDist = local.distance(pts->getControlPointAtIndex(i));
-            if (curDist < closestDist) {
-                closestIndx = i;
-                closestDist = curDist;
-            }
-        }
-
-        assert(closestIndx >= 0);
-        assert(closestIndx < pts->count());
-
-        // move it to the click location
-        pts->replaceControlPoint(local, closestIndx);
-
-        // redraw
-        drawPts();
-    };
-
-    listener->onTouchEnded = [&](Touch *touch, Event *event) {
-        //return true;
-    };
-
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    awesomeNode->setVisible(false);
 
 
     return true;
 }
 
-void Sample::drawPts() {
-    node->clear();
-    node->drawACardinalSpline(pts, 0.5, 30, Color4B::RED, 30);
+void Sample::click() {
+    CCLOG("click");
+    awesomeNode->setVisible(!awesomeNode->isVisible());
+    justNode->setVisible(!justNode->isVisible());
+
+    awesomeNode->clear();
+    justNode->clear();
+
+    justNode->drawCardinalSpline(pts, 0.5, 360, Color4F::GREEN);
+    awesomeNode->drawACardinalSpline(pts, 0.5, 360, Color4B::GREEN, 2);
+
+    justNode->drawLine(Vec2(50, 50), Vec2(100, 100), Color4F::GREEN);
+    awesomeNode->drawALine(Vec2(50, 50), Vec2(100, 100), Color4B::GREEN, 4);
+
+    justNode->drawTriangle(Vec2(200, 200), Vec2(250, 250), Vec2(300, 200), Color4F::GREEN);
+    awesomeNode->drawTriangle(Vec2(200, 200), Vec2(250, 250), Vec2(300, 200),
+                              Color4B::GREEN, Color4B::RED, Color4B(0xff, 0, 0, 70));
 }
+
