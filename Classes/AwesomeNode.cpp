@@ -32,15 +32,15 @@ void AwesomeNode::setOpacity(GLubyte opacity) {
 
 
 void AwesomeNode::drawTriangle(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
-                               const Color4B &color1, const Color4B &color2,
-                               const Color4B &color3) {
+                               const Color4F &color1, const Color4F &color2,
+                               const Color4F &color3) {
 
     unsigned int vertex_count = 3;
     ensureCapacity(vertex_count);
 
-    V2F_C4B_T2F a = {Vec2(p1.x, p1.y), color1, Tex2F(0.0, 0.0)};
-    V2F_C4B_T2F b = {Vec2(p2.x, p2.y), color2, Tex2F(0.0, 0.0)};
-    V2F_C4B_T2F c = {Vec2(p3.x, p3.y), color3, Tex2F(0.0, 0.0)};
+    V2F_C4B_T2F a = {Vec2(p1.x, p1.y), Color4B(color1), Tex2F(0.0, 0.0)};
+    V2F_C4B_T2F b = {Vec2(p2.x, p2.y), Color4B(color2), Tex2F(0.0, 0.0)};
+    V2F_C4B_T2F c = {Vec2(p3.x, p3.y), Color4B(color3), Tex2F(0.0, 0.0)};
 
     V2F_C4B_T2F_Triangle *triangles = (V2F_C4B_T2F_Triangle *) (_buffer + _bufferCount);
     V2F_C4B_T2F_Triangle triangle = {a, b, c};
@@ -56,16 +56,16 @@ void AwesomeNode::drawTriangle(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
 }
 
 
-void AwesomeNode::drawALine(const Vec2 &A, const Vec2 &B, const Color4B &color, int w) {
+void AwesomeNode::drawALine(const Vec2 &A, const Vec2 &B, float w, const Color4F &color) {
 
     lineSegment s = calculateLineSegment(A, B, w);
     //drawLineSegment(s, color);
-    drawASegment(A, B, w / 2, Color4F(color));
+    drawSegment(A, B, w / 2, color);
 }
 
 
 void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigned int segments,
-                                      const Color4B &color, int w) {
+                                      float w, const Color4F &color) {
     /// copy-pasted from DrawNode::drawCardinalSpline
     Vec2 *vertices = new(std::nothrow) Vec2[segments + 1];
     if (!vertices)
@@ -99,50 +99,54 @@ void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigne
         vertices[i].y = newPos.y;
     }
 
-    Vec2 A1p, A2p;
-    {
-        lineSegment prevBorder = calculateLineSegment(vertices[0], vertices[1], w);
-        A1p = prevBorder.A1;
-        A2p = prevBorder.A2;
+    if (w < 4) {
+        Vec2 A1p, A2p;
+        {
+            lineSegment prevBorder = calculateLineSegment(vertices[0], vertices[1], w);
+            A1p = prevBorder.A1;
+            A2p = prevBorder.A2;
+        }
+        for (int i = 2; i <= segments; ++i) {
+            lineJoint curBorder = calculateLineJoint(vertices[i - 2], vertices[i - 1], vertices[i],
+                                                     w);
+
+            lineSegment segment = curBorder.segment;
+            segment.A1 = A1p;
+            segment.A2 = A2p;
+
+            Color4F border(color);
+            border.a = 0;
+
+            if (curBorder.up) {
+                drawTriangle(curBorder.segment.B, curBorder.segment.B2, curBorder.B4, color, border,
+                             border);
+                segment.B1 = curBorder.K;
+                drawLineSegment(segment, color);
+                A1p = curBorder.K;
+                A2p = curBorder.B4;
+            } else {
+                drawTriangle(curBorder.segment.B, curBorder.segment.B1, curBorder.B3, color, border,
+                             border);
+                segment.B2 = curBorder.K3;
+                drawLineSegment(segment, color);
+                A1p = curBorder.B3;
+                A2p = curBorder.K3;
+            }
+        }
+
+        lineSegment lastSegment = calculateLineSegment(vertices[segments - 1], vertices[segments],
+                                                       w);
+        lastSegment.A1 = A1p;
+        lastSegment.A2 = A2p;
+        drawLineSegment(lastSegment, color);
+
+    } else {
+
+        for (int i = 2; i <= segments + 1; ++i) {
+            drawSegment(vertices[i - 2], vertices[i - 1], w / 2, color);
+        }
     }
 
-//    for (int i = 2; i <= segments; ++i) {
-//        lineJoint curBorder = calculateLineJoint(vertices[i - 2], vertices[i - 1], vertices[i], w);
-//
-//        lineSegment segment = curBorder.segment;
-//        segment.A1 = A1p;
-//        segment.A2 = A2p;
-//
-//        Color4B border(color);
-//        border.a = 0;
-//
-//        if (curBorder.up) {
-//            drawTriangle(curBorder.segment.B, curBorder.segment.B2, curBorder.B4, color, border,
-//                         border);
-//            segment.B1 = curBorder.K;
-//            drawLineSegment(segment, color);
-//            A1p = curBorder.K;
-//            A2p = curBorder.B4;
-//        } else {
-//            drawTriangle(curBorder.segment.B, curBorder.segment.B1, curBorder.B3, color, border,
-//                         border);
-//            segment.B2 = curBorder.K3;
-//            drawLineSegment(segment, color);
-//            A1p = curBorder.B3;
-//            A2p = curBorder.K3;
-//        }
-//    }
-//
-//    lineSegment lastSegment = calculateLineSegment(vertices[segments - 1], vertices[segments], w);
-//    lastSegment.A1 = A1p;
-//    lastSegment.A2 = A2p;
-//    drawLineSegment(lastSegment, color);
-
-    for (int i = 2; i <= segments + 1; ++i) {
-        drawASegment(vertices[i - 2], vertices[i - 1], w / 2, Color4F(color));
-    }
-
-    // draw above
 #ifdef AWESOMEDEBUG
     for (int i = 0; i < segments + 1; ++i) {
         drawDot(vertices[i], 2, Color4F::BLUE);
@@ -151,7 +155,6 @@ void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigne
         drawDot(config->getControlPointAtIndex(i), 3, Color4F::GREEN);
     }
 #endif
-
 
     CC_SAFE_DELETE_ARRAY(vertices);
 }
@@ -205,93 +208,8 @@ static inline Tex2F __t(const Vec2 &v) {
 }
 
 
-void
-AwesomeNode::drawASegment(const Vec2 &from, const Vec2 &to, float radius, const Color4F &color) {
-    unsigned int vertex_count = 6 * 3;
-    ensureCapacity(vertex_count);
-
-    Vec2 a = __v2f(from);
-    Vec2 b = __v2f(to);
-
-
-    Vec2 n = v2fnormalize(v2fperp(v2fsub(b, a)));
-    Vec2 t = v2fperp(n);
-
-    Vec2 nw = v2fmult(n, radius);
-    Vec2 tw = v2fmult(t, radius);
-    Vec2 v0 = v2fsub(b, v2fadd(nw, tw));
-    Vec2 v1 = v2fadd(b, v2fsub(nw, tw));
-    Vec2 v2 = v2fsub(b, nw);
-    Vec2 v3 = v2fadd(b, nw);
-    Vec2 v4 = v2fsub(a, nw);
-    Vec2 v5 = v2fadd(a, nw);
-    Vec2 v6 = v2fsub(a, v2fsub(nw, tw));
-    Vec2 v7 = v2fadd(a, v2fadd(nw, tw));
-
-
-    V2F_C4B_T2F_Triangle *triangles = (V2F_C4B_T2F_Triangle *) (_buffer + _bufferCount);
-
-    V2F_C4B_T2F_Triangle triangles0 = {
-            {v0, Color4B(color), __t(v2fneg(v2fadd(n, t)))},
-            {v1, Color4B(color), __t(v2fsub(n, t))},
-            {v2, Color4B(color), __t(v2fneg(n))},
-    };
-    triangles[0] = triangles0;
-
-    V2F_C4B_T2F_Triangle triangles1 = {
-            {v3, Color4B(color), __t(n)},
-            {v1, Color4B(color), __t(v2fsub(n, t))},
-            {v2, Color4B(color), __t(v2fneg(n))},
-    };
-    triangles[1] = triangles1;
-
-    V2F_C4B_T2F_Triangle triangles2 = {
-            {v3, Color4B(color), __t(n)},
-            {v4, Color4B(color), __t(v2fneg(n))},
-            {v2, Color4B(color), __t(v2fneg(n))},
-    };
-    triangles[2] = triangles2;
-
-    V2F_C4B_T2F_Triangle triangles3 = {
-            {v3, Color4B(color), __t(n)},
-            {v4, Color4B(color), __t(v2fneg(n))},
-            {v5, Color4B(color), __t(n)},
-    };
-    triangles[3] = triangles3;
-
-    V2F_C4B_T2F_Triangle triangles4 = {
-            {v6, Color4B(color), __t(v2fsub(t, n))},
-            {v4, Color4B(color), __t(v2fneg(n))},
-            {v5, Color4B(color), __t(n)},
-    };
-    triangles[4] = triangles4;
-
-    V2F_C4B_T2F_Triangle triangles5 = {
-            {v6, Color4B(color), __t(v2fsub(t, n))},
-            {v7, Color4B(color), __t(v2fadd(n, t))},
-            {v5, Color4B(color), __t(n)},
-    };
-    triangles[5] = triangles5;
-
-    _bufferCount += vertex_count;
-
-    _dirty = true;
-
-#ifdef AWESOMEDEBUG
-    highlightTriangle(v0, v1, v2);
-    highlightTriangle(v3, v1, v2);
-    highlightTriangle(v3, v4, v2);
-    highlightTriangle(v3, v4, v5);
-    highlightTriangle(v6, v4, v5);
-    highlightTriangle(v6, v7, v5);
-
-#endif
-
-}
-
-
-void AwesomeNode::drawLineSegment(const AwesomeNode::lineSegment &segment, const Color4B &color) {
-    Color4B border(color);
+void AwesomeNode::drawLineSegment(const AwesomeNode::lineSegment &segment, const Color4F &color) {
+    Color4F border(color);
     border.a = 0;
 
     drawTriangle(segment.A1, segment.B1, segment.A, border, border, color);
@@ -302,7 +220,7 @@ void AwesomeNode::drawLineSegment(const AwesomeNode::lineSegment &segment, const
 
 
 AwesomeNode::lineJoint
-AwesomeNode::calculateLineJoint(const Vec2 &A, const Vec2 &B, const Vec2 &C, int w) {
+AwesomeNode::calculateLineJoint(const Vec2 &A, const Vec2 &B, const Vec2 &C, float w) {
     lineJoint res;
     w = w / 2;
     Vec2 n1(A.y - B.y, B.x - A.x), n2(B.y - A.y, A.x - B.x);
@@ -337,7 +255,7 @@ AwesomeNode::calculateLineJoint(const Vec2 &A, const Vec2 &B, const Vec2 &C, int
 }
 
 
-AwesomeNode::lineSegment AwesomeNode::calculateLineSegment(const Vec2 &A, const Vec2 &B, int w) {
+AwesomeNode::lineSegment AwesomeNode::calculateLineSegment(const Vec2 &A, const Vec2 &B, float w) {
     lineSegment res;
 
     Vec2 p(B.x - A.x, B.y - A.y);
@@ -360,59 +278,59 @@ void AwesomeNode::highlightTriangle(const Vec2 &A, const Vec2 &B, const Vec2 &C)
     drawLine(C, A, Color4F::GREEN);
 }
 
+void
+AwesomeNode::drawDashDottedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize,
+                                const Color4F &color) {
+    auto steps = (int) (from.distance(to) / (dashSize * 1.1));
+    Vec2 v(to.x - from.x, to.y - from.y);
+    v.normalize();
+    Vec2 A, B, C;
+    A.x = from.x;
+    A.y = from.y;
+    for (int i = 0; i < steps; ++i) {
+        B.x = A.x + v.x * dashSize * 0.7f;
+        B.y = A.y + v.y * dashSize * 0.7f;
+        C.x = B.x + v.x * (dashSize * 0.2f);
+        C.y = B.y + v.y * (dashSize * 0.2f);
+
+        //drawSegment(A, B, w / 2, color);
+        drawALine(A, B, w, color);
+
+        drawDot(C, w / 2, color);
+
+        A.x = C.x + v.x * (dashSize * 0.2f);
+        A.y = C.y + v.y * (dashSize * 0.2f);
+    }
+
+    //drawSegment(A, to, w / 2, color);
+    drawALine(A, to, w, color);
+}
+
+void AwesomeNode::drawDashedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize,
+                                 const Color4F &color) {
+    auto steps = (int) (from.distance(to) / (dashSize * 1.3));
+    Vec2 v(to.x - from.x, to.y - from.y);
+    v.normalize();
+    Vec2 A, B;
+    A.x = from.x;
+    A.y = from.y;
+    for (int i = 0; i < steps; ++i) {
+        B.x = A.x + v.x * dashSize;
+        B.y = A.y + v.y * dashSize;
+
+        //drawSegment(A, B, w / 2, color);
+        drawALine(A, B, w, color);
+
+        A.x = B.x + v.x * (dashSize * 0.3f);
+        A.y = B.y + v.y * (dashSize * 0.3f);
+    }
+
+    //drawSegment(A, to, w / 2, color);
+    drawALine(A, to, w, color);
+}
+
 V2F_C4B_T2F __tct(float x, float y, Color4B color, float texx, float texy) {
     return V2F_C4B_T2F{Vec2(x, y), color, Tex2F(texx, texy)};
 }
 
-void AwesomeNode::testTrianglesTex() {
-
-    Color4B color(Color4B::RED);
-
-    unsigned int vertex_count = 3 * 4;
-    ensureCapacity(vertex_count);
-
-    V2F_C4B_T2F_Triangle *triangles = (V2F_C4B_T2F_Triangle *) (_buffer + _bufferCount);
-
-    triangles[0] = V2F_C4B_T2F_Triangle {__tct(300, 150, color, 0, 1),
-                                         __tct(350, 150, color, 1, 1),
-                                         __tct(300, 50, color, 0, -1)};
-
-    triangles[1] = V2F_C4B_T2F_Triangle {__tct(300, 50, color, 0, -1),
-                                         __tct(350, 150, color, 1, 1),
-                                         __tct(350, 50, color, 1, -1)};
-
-    triangles[2] = V2F_C4B_T2F_Triangle {__tct(300, 150, color, 0, 1),
-                                         __tct(250, 50, color, -1, -1),
-                                         __tct(300, 50, color, 0, -1)};
-
-    triangles[3] = V2F_C4B_T2F_Triangle {__tct(300, 150, color, 0, 1),
-                                         __tct(250, 150, color, -1, 1),
-                                         __tct(250, 50, color, -1, -1)};
-
-    _bufferCount += vertex_count;
-    _dirty = true;
-
-    //const Vec2 &center, float radius, float angle, unsigned int segments, bool drawLineToCenter, const Color4F &color);
-    drawCircle(Vec2(50, 100), 50, 360, 20, false, Color4F::RED);
-    drawDot(Vec2(150, 100), 50, Color4F::RED);
-
-
-    drawASegment(Vec2(250, 250), Vec2(300, 200), 20, Color4F::RED);
-    drawASegment(Vec2(300, 200), Vec2(350, 250), 20, Color4F::BLUE);
-
-
-    lineSegment seg = calculateLineSegment(Vec2(400, 200), Vec2(450, 250), 2);
-
-    DrawNode::drawTriangle(seg.A1, seg.B1, seg.A2, Color4F::RED);
-    DrawNode::drawTriangle(seg.A2, seg.B1, seg.B2, Color4F::RED);
-
-    //drawTriangle(Vec2(), Vec2(), Vec2(), Color4F::RED);
-
-
-#ifdef AWESOMEDEBUG
-//    highlightTriangle(a.vertices, b.vertices, c.vertices);
-//    highlightTriangle(a1.vertices, b1.vertices, c1.vertices);
-#endif
-
-}
 

@@ -11,13 +11,18 @@ public:
     static cocos2d::Scene *createScene();
 
     bool init() override;
+    void update(float dt) override;
 
     CREATE_FUNC(Sample);
 
-    void click();
+private:
+
+    /** draw a grid from upper left (A) to down right (B) corners */
+    void drawGrid(Vec2 A, Vec2 B);
 
     PointArray *pts = nullptr;
-    AwesomeNode *awesomeNode = nullptr;
-    DrawNode *justNode = nullptr;
+    PointArray *pts2 = nullptr;
+    AwesomeNode *node = nullptr;
+    AwesomeNode *background = nullptr;
 };
 

@@ -13,90 +13,74 @@ bool Sample::init() {
         return false;
     }
 
-    auto visibleSize = Director::getInstance()->getVisibleSize();
+    auto screen = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    Vec2 center(visibleSize.width / 2, visibleSize.height / 2);
+    Vec2 center(screen.width / 2, screen.height / 2);
+    Vec2 quarter(screen.width / 4, screen.height / 4);
+    Vec2 sixth(screen.width / 6, screen.height / 6);
 
-    awesomeNode = AwesomeNode::create();
-    justNode = DrawNode::create();
+    node = AwesomeNode::create();
+    background = AwesomeNode::create();
 
-    addChild(awesomeNode);
-    addChild(justNode);
+    addChild(background);
+    addChild(node);
 
-    auto button = Button::create("normal_image.png", "selected_image.png", "disabled_image.png");
-
-    button->setTitleText("awesome Node");
-    button->setTitleColor(Color3B::BLACK);
-    button->setZoomScale(1.2);
-
-    // set padding
-    button->ignoreContentAdaptWithSize(false);
-    button->setContentSize(Size(
-            button->getTitleRenderer()->getContentSize().width + 15,
-            button->getTitleRenderer()->getContentSize().height + 15)
-    );
-
-    button->setPosition(Vec2(visibleSize.width - 50, 50));
-
-    // set margin
-    LinearLayoutParameter* lp = LinearLayoutParameter::create();
-    button->setLayoutParameter(lp);
-    lp->setGravity(LinearLayoutParameter::LinearGravity::LEFT);
-    lp->setMargin(Margin(20, 20, 0, 0));
-
-
-    std::function<void()> fun = std::bind(&Sample::click, this);
-    button->addTouchEventListener([fun](Ref* sender, Widget::TouchEventType type) {
-        if (type == Widget::TouchEventType::ENDED) {
-            fun();
-        }
-    });
-
-    addChild(button);
-
-
-    pts = PointArray::create(6);
+    int n = 50;
+    pts = PointArray::create(n);
+    pts2 = PointArray::create(n);
     pts->retain();
-    auto defY = (int)center.y;
-    pts->addControlPoint(Vec2(50, defY + 50));
-    pts->addControlPoint(Vec2(100, defY - 50));
-    pts->addControlPoint(Vec2(150, defY + 50));
-    pts->addControlPoint(Vec2(200, defY - 50));
-    pts->addControlPoint(Vec2(250, defY + 50));
-    pts->addControlPoint(Vec2(350, defY + 50));
+    pts2->retain();
+    auto defY = (int)(center.y + sixth.y);
+    auto defY2 = (int)(center.y - sixth.y);
+    auto dev = sixth.y;
+    for (int i = 0; i < n; ++i) {
+        pts->addControlPoint(Vec2(
+                sixth.x + i * (screen.width - 2 * sixth.x) / n,
+                RandomHelper::random_real<float>(defY - dev, defY + dev)));
+        pts2->addControlPoint(Vec2(
+                sixth.x + i * (screen.width - 2 * sixth.x) / n,
+                RandomHelper::random_real<float>(defY2 - dev, defY2 + dev)));
+    }
 
-    justNode->drawCardinalSpline(pts, 0.5, 360, Color4F::GREEN);
-    awesomeNode->drawACardinalSpline(pts, 0.5, 360, Color4B::GREEN, 2);
+    background->drawSolidRect(origin, Vec2(screen.width, screen.height), Color4F::WHITE);
+    drawGrid(Vec2(sixth.x, screen.height - sixth.y), Vec2(screen.width - sixth.x, sixth.y));
 
-    justNode->drawLine(Vec2(50, 50), Vec2(100, 100), Color4F::GREEN);
-    awesomeNode->drawALine(Vec2(50, 50), Vec2(100, 100), Color4B::GREEN, 2);
+    node->drawTriangle(
+            Vec2(origin.x, screen.height - quarter.y),
+            Vec2(quarter.x / 2, screen.height),
+            Vec2(quarter.x, screen.height - quarter.y),
+            Color4F::GREEN, Color4F::RED, Color4F(0xff, 0, 0, 70));
 
-    justNode->drawTriangle(Vec2(200, 200), Vec2(250, 250), Vec2(300, 200), Color4F::GREEN);
-    awesomeNode->drawTriangle(Vec2(200, 200), Vec2(250, 250), Vec2(300, 200),
-            Color4B::GREEN, Color4B::RED, Color4B(0xff, 0, 0, 70));
+    node->drawALine(Vec2(sixth.x, defY), Vec2(screen.width - sixth.x, defY), 1, Color4F::BLUE);
+    node->drawACardinalSpline(pts, 0.5, 360, 4, Color4F::BLACK);
 
-    awesomeNode->setVisible(false);
+    node->drawALine(Vec2(sixth.x, defY2), Vec2(screen.width - sixth.x, defY2), 1, Color4F::BLUE);
+    node->drawACardinalSpline(pts2, 0.5, 360, 2, Color4F::BLACK);
+
+    node->drawDashDottedLine(origin, Vec2(screen.width, screen.height), 1, 10, Color4F::GRAY);
 
 
+    //scheduleUpdate();
     return true;
 }
 
-void Sample::click() {
-    CCLOG("click");
-    awesomeNode->setVisible(!awesomeNode->isVisible());
-    justNode->setVisible(!justNode->isVisible());
+void Sample::update(float dt) {
+    //Node::update(dt);
 
-    awesomeNode->clear();
-    justNode->clear();
-
-    justNode->drawCardinalSpline(pts, 0.5, 360, Color4F::GREEN);
-    awesomeNode->drawACardinalSpline(pts, 0.5, 360, Color4B::GREEN, 2);
-
-    justNode->drawLine(Vec2(50, 50), Vec2(100, 100), Color4F::GREEN);
-    awesomeNode->drawALine(Vec2(50, 50), Vec2(100, 100), Color4B::GREEN, 4);
-
-    justNode->drawTriangle(Vec2(200, 200), Vec2(250, 250), Vec2(300, 200), Color4F::GREEN);
-    awesomeNode->drawTriangle(Vec2(200, 200), Vec2(250, 250), Vec2(300, 200),
-                              Color4B::GREEN, Color4B::RED, Color4B(0xff, 0, 0, 70));
 }
+
+void Sample::drawGrid(Vec2 A, Vec2 B) {
+    node->drawRect(A, B, Color4F::GRAY);
+    int n = 5;
+    float stepX = (B.x - A.x) / n;
+    float stepY = (A.y - B.y) / n;
+    for (int i = 1; i < n; ++i) {
+        node->drawDashedLine(Vec2(A.x + stepX * i, A.y), Vec2(A.x + stepX * i, B.y), 0.5, 10, Color4F::GRAY);
+    }
+
+    for (int i = 1; i < n; ++i) {
+        node->drawDashedLine(Vec2(A.x, A.y - stepY * i), Vec2(B.x, A.y - stepY * i), 0.5, 10, Color4F::GRAY);
+    }
+}
+
 

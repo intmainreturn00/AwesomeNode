@@ -23,19 +23,22 @@ public:
 
     bool init() override;
 
-    /**draw triangle when each vertex can has its own color.*/
+    /**draw triangle when each vertex can has its own color and opacity.*/
     void drawTriangle(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
-                      const Color4B &color1, const Color4B &color2, const Color4B &color3);
+                      const Color4F &color1, const Color4F &color2, const Color4F &color3);
 
     /** draw anti-aliased line */
-    void drawALine(const Vec2 &A, const Vec2 &B, const Color4B &color, int w);
+    void drawALine(const Vec2 &A, const Vec2 &B, float w, const Color4F &color);
 
+    /** draw anti-aliased cardinal spline with fixed math
+     * (see https://discuss.cocos2d-x.org/t/catmull-rom-cardinal-spline-interpolation-problem/4586) */
     void drawACardinalSpline(PointArray *config, float tension, unsigned int segments,
-                             const Color4B &color, int w);
+                             float w, const Color4F &color);
 
-    void drawASegment(const Vec2 &from, const Vec2 &to, float radius, const Color4F &color);
 
-    void testTrianglesTex();
+    void drawDashDottedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize, const Color4F &color);
+
+    void drawDashedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize, const Color4F &color);
 
 private:
 
@@ -53,11 +56,11 @@ private:
         bool up;
     };
 
-    void drawLineSegment(const lineSegment &segment, const Color4B &color);
+    void drawLineSegment(const lineSegment &segment, const Color4F &color);
 
-    lineJoint calculateLineJoint(const Vec2 &A, const Vec2 &B, const Vec2 &C, int w);
+    lineJoint calculateLineJoint(const Vec2 &A, const Vec2 &B, const Vec2 &C, float w);
 
-    lineSegment calculateLineSegment(const Vec2 &A, const Vec2 &B, int w);
+    lineSegment calculateLineSegment(const Vec2 &A, const Vec2 &B, float w);
 
     void highlightTriangle(const Vec2 &A, const Vec2 &B, const Vec2 &C);
 
