@@ -62,7 +62,7 @@ void Sample::drawGrid(Vec2 A, Vec2 B) {
 }
 
 void Sample::generateDataPoints() {
-    n = 50;
+    n = 10;
     pts = PointArray::create(n);
     pts2 = PointArray::create(n);
     pts->retain();
@@ -94,13 +94,10 @@ void Sample::drawEverything() {
             Color4F::GREEN, Color4F::RED, Color4F::BLUE);
 
     node->drawALine(Vec2(sixth.x, defY), Vec2(screen.width - sixth.x, defY), 1, Color4F::BLUE);
-    node->drawACardinalSpline(pts, 0.5, 360, 4, Color4F::BLACK);
+    node->drawAFilledCardinalSpline(pts, 0.5, 360, 10, Color4F::BLACK, center.y, Color4F(1, 0.5f, 0, 0.3));
 
     node->drawALine(Vec2(sixth.x, defY2), Vec2(screen.width - sixth.x, defY2), 1, Color4F::BLUE);
-    node->drawACardinalSpline(pts2, 0.5, 360, 2, Color4F::BLACK);
-
-    node->drawSolidRect(Vec2(sixth.x, defY + dev / 2), Vec2(screen.width - sixth.x, defY - dev / 2),
-                   Color4F(0, 0, 1, 0.3));
+    node->drawAFilledCardinalSpline(pts2, 0.5, 360, 2, Color4F::BLACK, sixth.y, Color4F(0, 0, 1, 0.3));
 
     int i1 = RandomHelper::random_int(0, n - 1);
     int i2 = RandomHelper::random_int(0, n - 1);

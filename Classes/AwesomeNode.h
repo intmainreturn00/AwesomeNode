@@ -33,10 +33,18 @@ public:
     void drawACardinalSpline(PointArray *config, float tension, unsigned int segments,
                              float w, const Color4F &color);
 
+    /** draw anti-aliased cardinal spline with feelings to bottom line*/
+    void drawAFilledCardinalSpline(PointArray *config, float tension, unsigned int segments,
+                             float w, const Color4F &color, float bottomY, const Color4F &fill);
+
 
     void drawDashDottedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize, const Color4F &color);
 
     void drawDashedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize, const Color4F &color);
+
+    void drawSolidRect(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3, const Vec2& p4, const Color4F &color);
+
+    void drawSolidRect(const Vec2 &origin, const Vec2 &destination, const Color4F &color);
 
 private:
 
