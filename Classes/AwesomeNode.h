@@ -42,6 +42,8 @@ public:
 
 private:
 
+    static const int LINE_SIZE_THRESHOLD;
+
     GLubyte opacity;
 
     struct lineSegment {

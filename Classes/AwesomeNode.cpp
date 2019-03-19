@@ -1,5 +1,7 @@
 #include "AwesomeNode.h"
 
+const int AwesomeNode::LINE_SIZE_THRESHOLD = 4;
+
 
 bool AwesomeNode::init() {
     return DrawNode::init();
@@ -58,9 +60,12 @@ void AwesomeNode::drawTriangle(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
 
 void AwesomeNode::drawALine(const Vec2 &A, const Vec2 &B, float w, const Color4F &color) {
 
-    lineSegment s = calculateLineSegment(A, B, w);
-    //drawLineSegment(s, color);
-    drawSegment(A, B, w / 2, color);
+    if (w < LINE_SIZE_THRESHOLD) {
+        lineSegment s = calculateLineSegment(A, B, w);
+        drawLineSegment(s, color);
+    } else {
+        drawSegment(A, B, w / 2, color);
+    }
 }
 
 
@@ -99,7 +104,7 @@ void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigne
         vertices[i].y = newPos.y;
     }
 
-    if (w < 4) {
+    if (w < LINE_SIZE_THRESHOLD) {
         Vec2 A1p, A2p;
         {
             lineSegment prevBorder = calculateLineSegment(vertices[0], vertices[1], w);
@@ -107,8 +112,8 @@ void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigne
             A2p = prevBorder.A2;
         }
         for (int i = 2; i <= segments; ++i) {
-            lineJoint curBorder = calculateLineJoint(vertices[i - 2], vertices[i - 1], vertices[i],
-                                                     w);
+            lineJoint curBorder = calculateLineJoint(
+                    vertices[i - 2], vertices[i - 1], vertices[i], w);
 
             lineSegment segment = curBorder.segment;
             segment.A1 = A1p;
@@ -293,16 +298,13 @@ AwesomeNode::drawDashDottedLine(const Vec2 &from, const Vec2 &to, float w, float
         C.x = B.x + v.x * (dashSize * 0.2f);
         C.y = B.y + v.y * (dashSize * 0.2f);
 
-        //drawSegment(A, B, w / 2, color);
         drawALine(A, B, w, color);
-
         drawDot(C, w / 2, color);
 
         A.x = C.x + v.x * (dashSize * 0.2f);
         A.y = C.y + v.y * (dashSize * 0.2f);
     }
 
-    //drawSegment(A, to, w / 2, color);
     drawALine(A, to, w, color);
 }
 
@@ -318,14 +320,12 @@ void AwesomeNode::drawDashedLine(const Vec2 &from, const Vec2 &to, float w, floa
         B.x = A.x + v.x * dashSize;
         B.y = A.y + v.y * dashSize;
 
-        //drawSegment(A, B, w / 2, color);
         drawALine(A, B, w, color);
 
         A.x = B.x + v.x * (dashSize * 0.3f);
         A.y = B.y + v.y * (dashSize * 0.3f);
     }
 
-    //drawSegment(A, to, w / 2, color);
     drawALine(A, to, w, color);
 }
 
