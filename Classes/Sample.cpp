@@ -62,7 +62,7 @@ void Sample::drawGrid(Vec2 A, Vec2 B) {
 }
 
 void Sample::generateDataPoints() {
-    n = 10;
+    n = 50;
     pts = PointArray::create(n);
     pts2 = PointArray::create(n);
     pts->retain();
@@ -85,16 +85,16 @@ void Sample::drawEverything() {
     node->clear();
 
     background->drawSolidRect(origin, Vec2(screen.width, screen.height), Color4F::WHITE);
-    drawGrid(Vec2(sixth.x, screen.height - sixth.y), Vec2(screen.width - sixth.x, sixth.y));
+    drawGrid(Vec2(sixth.x, screen.height - 20), Vec2(screen.width - 20, sixth.y));
 
     node->drawTriangle(
-            Vec2(origin.x, screen.height - quarter.y),
-            Vec2(quarter.x / 2, screen.height),
-            Vec2(quarter.x, screen.height - quarter.y),
+            Vec2(origin.x, screen.height - sixth.y),
+            Vec2(sixth.x / 2, screen.height),
+            Vec2(sixth.x, screen.height - sixth.y),
             Color4F::GREEN, Color4F::RED, Color4F::BLUE);
 
     node->drawALine(Vec2(sixth.x, defY), Vec2(screen.width - sixth.x, defY), 1, Color4F::BLUE);
-    node->drawAFilledCardinalSpline(pts, 0.5, 360, 10, Color4F::BLACK, center.y, Color4F(1, 0.5f, 0, 0.3));
+    node->drawAFilledCardinalSpline(pts, 0.5, 360, 5, Color4F::BLACK, center.y, Color4F(1, 0.5f, 0, 0.3));
 
     node->drawALine(Vec2(sixth.x, defY2), Vec2(screen.width - sixth.x, defY2), 1, Color4F::BLUE);
     node->drawAFilledCardinalSpline(pts2, 0.5, 360, 2, Color4F::BLACK, sixth.y, Color4F(0, 0, 1, 0.3));
