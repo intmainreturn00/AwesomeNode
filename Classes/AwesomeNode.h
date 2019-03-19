@@ -17,8 +17,6 @@ class AwesomeNode : public DrawNode {
 
 public:
 
-    void setOpacity(GLubyte opacity) override;
-
     CREATE_FUNC(AwesomeNode);
 
     bool init() override;
@@ -43,8 +41,6 @@ public:
 private:
 
     static const int LINE_SIZE_THRESHOLD;
-
-    GLubyte opacity;
 
     struct lineSegment {
         Vec2 A, A1, A2;

@@ -8,31 +8,6 @@ bool AwesomeNode::init() {
 }
 
 
-void AwesomeNode::setOpacity(GLubyte opacity) {
-    this->opacity = opacity;
-    _displayedOpacity = _realOpacity = opacity;
-    if (_bufferCount) {
-        for (int i = 0; i < _bufferCount; i++) {
-            _buffer[i].colors.a = opacity;
-        }
-    }
-
-    if (_bufferCountGLPoint) {
-        for (int i = 0; i < _bufferCountGLPoint; i++) {
-            _bufferGLPoint[i].colors.a = opacity;
-        }
-    }
-
-    if (_bufferCountGLLine) {
-        for (int i = 0; i < _bufferCountGLLine; i++) {
-            _bufferGLLine[i].colors.a = opacity;
-        }
-        _dirtyGLLine = true;
-    }
-    _dirty = true;
-}
-
-
 void AwesomeNode::drawTriangle(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
                                const Color4F &color1, const Color4F &color2,
                                const Color4F &color3) {
@@ -44,7 +19,7 @@ void AwesomeNode::drawTriangle(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
     V2F_C4B_T2F b = {Vec2(p2.x, p2.y), Color4B(color2), Tex2F(0.0, 0.0)};
     V2F_C4B_T2F c = {Vec2(p3.x, p3.y), Color4B(color3), Tex2F(0.0, 0.0)};
 
-    V2F_C4B_T2F_Triangle *triangles = (V2F_C4B_T2F_Triangle *) (_buffer + _bufferCount);
+    auto *triangles = (V2F_C4B_T2F_Triangle *) (_buffer + _bufferCount);
     V2F_C4B_T2F_Triangle triangle = {a, b, c};
     triangles[0] = triangle;
 
@@ -72,7 +47,7 @@ void AwesomeNode::drawALine(const Vec2 &A, const Vec2 &B, float w, const Color4F
 void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigned int segments,
                                       float w, const Color4F &color) {
     /// copy-pasted from DrawNode::drawCardinalSpline
-    Vec2 *vertices = new(std::nothrow) Vec2[segments + 1];
+    auto *vertices = new(std::nothrow) Vec2[segments + 1];
     if (!vertices)
         return;
 
@@ -89,15 +64,15 @@ void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigne
             p = config->count() - 1;
             lt = 1;
         } else {
-            p = dt / deltaT;
+            p = (ssize_t) (dt / deltaT);
             lt = (dt - deltaT * (float) p) / deltaT;
         }
 
         // Interpolate
-        Vec2 pp0 = config->getControlPointAtIndex(p - 1);
-        Vec2 pp1 = config->getControlPointAtIndex(p + 0);
-        Vec2 pp2 = config->getControlPointAtIndex(p + 1);
-        Vec2 pp3 = config->getControlPointAtIndex(p + 2);
+        const Vec2 &pp0 = config->getControlPointAtIndex(p - 1);
+        const Vec2 &pp1 = config->getControlPointAtIndex(p + 0);
+        const Vec2 &pp2 = config->getControlPointAtIndex(p + 1);
+        const Vec2 &pp3 = config->getControlPointAtIndex(p + 2);
 
         Vec2 newPos = ccCardinalSplineAt(pp0, pp1, pp2, pp3, tension, lt);
         vertices[i].x = newPos.x;
@@ -162,54 +137,6 @@ void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigne
 #endif
 
     CC_SAFE_DELETE_ARRAY(vertices);
-}
-
-
-static inline Vec2 v2f(float x, float y) {
-    Vec2 ret(x, y);
-    return ret;
-}
-
-static inline Vec2 v2fadd(const Vec2 &v0, const Vec2 &v1) {
-    return v2f(v0.x + v1.x, v0.y + v1.y);
-}
-
-static inline Vec2 v2fsub(const Vec2 &v0, const Vec2 &v1) {
-    return v2f(v0.x - v1.x, v0.y - v1.y);
-}
-
-static inline Vec2 v2fmult(const Vec2 &v, float s) {
-    return v2f(v.x * s, v.y * s);
-}
-
-static inline Vec2 v2fperp(const Vec2 &p0) {
-    return v2f(-p0.y, p0.x);
-}
-
-static inline Vec2 v2fneg(const Vec2 &p0) {
-    return v2f(-p0.x, -p0.y);
-}
-
-static inline float v2fdot(const Vec2 &p0, const Vec2 &p1) {
-    return p0.x * p1.x + p0.y * p1.y;
-}
-
-static inline Vec2 v2fnormalize(const Vec2 &p) {
-    Vec2 r(p.x, p.y);
-    r.normalize();
-    return v2f(r.x, r.y);
-}
-
-static inline Vec2 __v2f(const Vec2 &v) {
-//#ifdef __LP64__
-    return v2f(v.x, v.y);
-// #else
-//     return * ((Vec2*) &v);
-// #endif
-}
-
-static inline Tex2F __t(const Vec2 &v) {
-    return *(Tex2F *) &v;
 }
 
 
@@ -329,8 +256,55 @@ void AwesomeNode::drawDashedLine(const Vec2 &from, const Vec2 &to, float w, floa
     drawALine(A, to, w, color);
 }
 
+
+
+static inline Vec2 v2f(float x, float y) {
+    Vec2 ret(x, y);
+    return ret;
+}
+
+static inline Vec2 v2fadd(const Vec2 &v0, const Vec2 &v1) {
+    return v2f(v0.x + v1.x, v0.y + v1.y);
+}
+
+static inline Vec2 v2fsub(const Vec2 &v0, const Vec2 &v1) {
+    return v2f(v0.x - v1.x, v0.y - v1.y);
+}
+
+static inline Vec2 v2fmult(const Vec2 &v, float s) {
+    return v2f(v.x * s, v.y * s);
+}
+
+static inline Vec2 v2fperp(const Vec2 &p0) {
+    return v2f(-p0.y, p0.x);
+}
+
+static inline Vec2 v2fneg(const Vec2 &p0) {
+    return v2f(-p0.x, -p0.y);
+}
+
+static inline float v2fdot(const Vec2 &p0, const Vec2 &p1) {
+    return p0.x * p1.x + p0.y * p1.y;
+}
+
+static inline Vec2 v2fnormalize(const Vec2 &p) {
+    Vec2 r(p.x, p.y);
+    r.normalize();
+    return v2f(r.x, r.y);
+}
+
+static inline Vec2 __v2f(const Vec2 &v) {
+//#ifdef __LP64__
+    return v2f(v.x, v.y);
+// #else
+//     return * ((Vec2*) &v);
+// #endif
+}
+
+static inline Tex2F __t(const Vec2 &v) {
+    return *(Tex2F *) &v;
+}
+
 V2F_C4B_T2F __tct(float x, float y, Color4B color, float texx, float texy) {
     return V2F_C4B_T2F{Vec2(x, y), color, Tex2F(texx, texy)};
 }
-
-
