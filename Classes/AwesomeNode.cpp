@@ -298,6 +298,15 @@ AwesomeNode::drawAFilledCardinalSpline(PointArray *config, float tension, unsign
             A1p = prevBorder.A1;
             A2p = prevBorder.A2;
         }
+
+        for (int i = 2; i <= segments; ++i) {
+            lineJoint curBorder = calculateLineJoint(
+                    vertices[i - 2], vertices[i - 1], vertices[i], w);
+            drawSolidRect(curBorder.segment.A, curBorder.segment.B,
+                          Vec2(curBorder.segment.B.x, bottomY),
+                          Vec2(curBorder.segment.A.x, bottomY), fill);
+        }
+
         for (int i = 2; i <= segments; ++i) {
             lineJoint curBorder = calculateLineJoint(
                     vertices[i - 2], vertices[i - 1], vertices[i], w);
@@ -308,10 +317,6 @@ AwesomeNode::drawAFilledCardinalSpline(PointArray *config, float tension, unsign
 
             Color4F border(color);
             border.a = 0;
-
-            drawSolidRect(curBorder.segment.A, curBorder.segment.B,
-                          Vec2(curBorder.segment.B.x, bottomY),
-                          Vec2(curBorder.segment.A.x, bottomY), fill);
 
             if (curBorder.up) {
                 drawTriangle(curBorder.segment.B, curBorder.segment.B2, curBorder.B4, color, border,

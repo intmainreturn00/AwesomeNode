@@ -3,15 +3,11 @@
 #include "cocos2d.h"
 #include "AwesomeNode.h"
 
-#include "ui/CocosGUI.h"
-using namespace ui;
-
 class Sample : public cocos2d::Scene {
 public:
     static cocos2d::Scene *createScene();
 
     bool init() override;
-    void update(float dt) override;
 
     CREATE_FUNC(Sample);
 
@@ -33,5 +29,14 @@ private:
     Vec2 origin, center, quarter, sixth;
     float defY, defY2, dev;
     int n;
+
+    const Color4F BLACK = Color4F(Color4B(21, 23, 33, 255));
+    const Color4F GREY = Color4F(Color4B(34, 38, 50, 255));
+    const Color4F GREEN = Color4F(Color4B(64, 209, 163, 255));
+    const Color4F GREEN_SH = Color4F(Color4B(27, 67, 63, 255));
+    const Color4F RED = Color4F(Color4B(214, 41, 84, 255));
+    const Color4F RED_SH = Color4F(Color4B(68, 27, 45, 255));
+
+
 };
 

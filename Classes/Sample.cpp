@@ -40,24 +40,16 @@ bool Sample::init() {
     return true;
 }
 
-void Sample::update(float dt) {
-    //Node::update(dt);
-
-}
-
 void Sample::drawGrid(Vec2 A, Vec2 B) {
-    node->drawRect(A, B, Color4F::GRAY);
+    node->drawSolidRect(A, B, BLACK);
     int n = 10;
     float stepX = (B.x - A.x) / n;
     float stepY = (A.y - B.y) / n;
     for (int i = 1; i < n; ++i) {
-        node->drawDashedLine(Vec2(A.x + stepX * i, A.y), Vec2(A.x + stepX * i, B.y), 0.5, 10,
-                             Color4F::GRAY);
+        node->drawALine(Vec2(A.x + stepX * i, A.y), Vec2(A.x + stepX * i, B.y), 1, GREY);
     }
-
     for (int i = 1; i < n; ++i) {
-        node->drawDashedLine(Vec2(A.x, A.y - stepY * i), Vec2(B.x, A.y - stepY * i), 0.5, 10,
-                             Color4F::GRAY);
+        node->drawALine(Vec2(A.x, A.y - stepY * i), Vec2(B.x, A.y - stepY * i), 1, GREY);
     }
 }
 
@@ -72,10 +64,10 @@ void Sample::generateDataPoints() {
     dev = sixth.y;
     for (int i = 0; i < n; ++i) {
         pts->addControlPoint(Vec2(
-                sixth.x + i * (screen.width - 2 * sixth.x) / n,
+                20 + i * (screen.width - 60) / n,
                 RandomHelper::random_real<float>(defY - dev, defY + dev)));
         pts2->addControlPoint(Vec2(
-                sixth.x + i * (screen.width - 2 * sixth.x) / n,
+                20 + i * (screen.width - 60) / n,
                 RandomHelper::random_real<float>(defY2 - dev, defY2 + dev)));
     }
 }
@@ -84,20 +76,18 @@ void Sample::drawEverything() {
     background->clear();
     node->clear();
 
-    background->drawSolidRect(origin, Vec2(screen.width, screen.height), Color4F::WHITE);
-    drawGrid(Vec2(sixth.x, screen.height - 20), Vec2(screen.width - 20, sixth.y));
+    background->drawSolidRect(origin, Vec2(screen.width, screen.height), GREY);
+    drawGrid(Vec2(20, screen.height - 20), Vec2(screen.width - 20, 20));
 
-    node->drawTriangle(
-            Vec2(origin.x, screen.height - sixth.y),
-            Vec2(sixth.x / 2, screen.height),
-            Vec2(sixth.x, screen.height - sixth.y),
-            Color4F::GREEN, Color4F::RED, Color4F::BLUE);
+    auto level1 = (int) defY + RandomHelper::random_int(2, 12);
+    node->drawDashedLine(Vec2(20, level1),
+                         Vec2(screen.width - 20, level1), 1, 5, GREEN);
+    auto level2 = (int) defY2 + RandomHelper::random_int(2, 12);
+    node->drawDashedLine(Vec2(20, level2),
+                         Vec2(screen.width - 20, level2), 1, 5, RED);
 
-    node->drawALine(Vec2(sixth.x, defY), Vec2(screen.width - sixth.x, defY), 1, Color4F::BLUE);
-    node->drawAFilledCardinalSpline(pts, 0.5, 360, 5, Color4F::BLACK, center.y, Color4F(1, 0.5f, 0, 0.3));
-
-    node->drawALine(Vec2(sixth.x, defY2), Vec2(screen.width - sixth.x, defY2), 1, Color4F::BLUE);
-    node->drawAFilledCardinalSpline(pts2, 0.5, 360, 2, Color4F::BLACK, sixth.y, Color4F(0, 0, 1, 0.3));
+    node->drawAFilledCardinalSpline(pts, 0.5, 360, 5, RED, center.y, RED_SH);
+    node->drawAFilledCardinalSpline(pts2, 0.5, 360, 2, GREEN, sixth.y, GREEN_SH);
 
     int i1 = RandomHelper::random_int(0, n - 1);
     int i2 = RandomHelper::random_int(0, n - 1);
@@ -107,20 +97,8 @@ void Sample::drawEverything() {
     node->drawDot(pts2->getControlPointAtIndex(i2), 7, Color4F(0, 1, 0, 0.3));
     node->drawDot(pts2->getControlPointAtIndex(i2), 4, Color4F::GREEN);
 
-    node->drawDashDottedLine(
-            Vec2(sixth.x - 20, center.y + sixth.y),
-            Vec2(sixth.x - 20, center.y - sixth.y),
-            2, 10, Color4F::ORANGE);
-
-    node->drawDashDottedLine(
-            Vec2(sixth.x - 40, center.y + sixth.y),
-            Vec2(sixth.x - 40, center.y - sixth.y),
-            4, 15, Color4F::ORANGE);
-
-    node->drawDashedLine(
-            Vec2(sixth.x - 60, center.y + sixth.y),
-            Vec2(sixth.x - 60, center.y - sixth.y),
-            7, 20, Color4F::ORANGE);
+    node->drawDashDottedLine(Vec2(screen.width - 40, 20),
+                             Vec2(screen.width - 40, screen.height - 20), 2, 7, RED_SH);
 }
 
 
