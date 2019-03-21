@@ -38,9 +38,11 @@ public:
                              float w, const Color4F &color, float bottomY, const Color4F &fill);
 
 
-    void drawDashDottedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize, const Color4F &color);
+    void drawADashDottedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize,
+                             const Color4F &color);
 
-    void drawDashedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize, const Color4F &color);
+    void drawADashedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize,
+                         const Color4F &color);
 
     void drawSolidRect(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3, const Vec2& p4, const Color4F &color);
 
@@ -67,6 +69,10 @@ private:
     lineJoint calculateLineJoint(const Vec2 &A, const Vec2 &B, const Vec2 &C, float w);
 
     lineSegment calculateLineSegment(const Vec2 &A, const Vec2 &B, float w);
+
+    Vec2 *calculateVertices(PointArray *config, float tension, unsigned int segments);
+
+    void tessellation(Vec2 *vertices, unsigned int segments, float w, const Color4F &color);
 
     void highlightTriangle(const Vec2 &A, const Vec2 &B, const Vec2 &C);
 

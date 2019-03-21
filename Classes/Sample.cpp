@@ -78,11 +78,11 @@ void Sample::drawEverything() {
     drawGrid(Vec2(margin, screen.height - margin), Vec2(screen.width - margin, margin));
 
     auto level1 = (int) defY + RandomHelper::random_int(2, 12);
-    node->drawDashedLine(Vec2(margin, level1),
-                         Vec2(screen.width - margin, level1), 1, 5, GREEN);
+    node->drawADashedLine(Vec2(margin, level1),
+                          Vec2(screen.width - margin, level1), 1, 5, GREEN);
     auto level2 = (int) defY2 + RandomHelper::random_int(2, 12);
-    node->drawDashedLine(Vec2(margin, level2),
-                         Vec2(screen.width - margin, level2), 1, 5, RED);
+    node->drawADashedLine(Vec2(margin, level2),
+                          Vec2(screen.width - margin, level2), 1, 5, RED);
 
     node->drawAFilledCardinalSpline(pts, 0.5, 360, 5, RED, center.y, RED_SH);
     node->drawAFilledCardinalSpline(pts2, 0.5, 360, 2, GREEN, sixth.y, GREEN_SH);
@@ -95,8 +95,8 @@ void Sample::drawEverything() {
     node->drawDot(pts2->getControlPointAtIndex(i2), 7, Color4F(0, 1, 0, 0.3));
     node->drawDot(pts2->getControlPointAtIndex(i2), 4, Color4F::GREEN);
 
-    node->drawDashDottedLine(Vec2(screen.width - 2 * margin, margin),
-                             Vec2(screen.width - 2 * margin, screen.height - margin), 2, 7, RED_SH);
+    node->drawADashDottedLine(Vec2(screen.width - 2 * margin, margin),
+                              Vec2(screen.width - 2 * margin, screen.height - margin), 2, 7, RED_SH);
 }
 
 

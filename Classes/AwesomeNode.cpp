@@ -46,81 +46,12 @@ void AwesomeNode::drawALine(const Vec2 &A, const Vec2 &B, float w, const Color4F
 
 void AwesomeNode::drawACardinalSpline(PointArray *config, float tension, unsigned int segments,
                                       float w, const Color4F &color) {
-    auto *vertices = new(std::nothrow) Vec2[segments + 1];
-    if (!vertices)
-        return;
 
-    ssize_t p;
-    float lt;
-    float deltaT = 1.0f / (config->count() - 1);
-
-    for (unsigned int i = 0; i < segments + 1; i++) {
-
-        float dt = (float) i / segments;
-
-        // border
-        if (dt == 1) {
-            p = config->count() - 1;
-            lt = 1;
-        } else {
-            p = (ssize_t) (dt / deltaT);
-            lt = (dt - deltaT * (float) p) / deltaT;
-        }
-
-        // Interpolate
-        const Vec2 &pp0 = config->getControlPointAtIndex(p - 1);
-        const Vec2 &pp1 = config->getControlPointAtIndex(p + 0);
-        const Vec2 &pp2 = config->getControlPointAtIndex(p + 1);
-        const Vec2 &pp3 = config->getControlPointAtIndex(p + 2);
-
-        Vec2 newPos = ccCardinalSplineAt(pp0, pp1, pp2, pp3, tension, lt);
-        vertices[i].x = newPos.x;
-        vertices[i].y = newPos.y;
-    }
+    auto *vertices = calculateVertices(config, tension, segments);
 
     if (w < LINE_SIZE_THRESHOLD) {
-        Vec2 A1p, A2p;
-        {
-            lineSegment prevBorder = calculateLineSegment(vertices[0], vertices[1], w);
-            A1p = prevBorder.A1;
-            A2p = prevBorder.A2;
-        }
-        for (int i = 2; i <= segments; ++i) {
-            lineJoint curBorder = calculateLineJoint(
-                    vertices[i - 2], vertices[i - 1], vertices[i], w);
-
-            lineSegment segment = curBorder.segment;
-            segment.A1 = A1p;
-            segment.A2 = A2p;
-
-            Color4F border(color);
-            border.a = 0;
-
-            if (curBorder.up) {
-                drawTriangle(curBorder.segment.B, curBorder.segment.B2, curBorder.B4, color, border,
-                             border);
-                segment.B1 = curBorder.K;
-                drawLineSegment(segment, color);
-                A1p = curBorder.K;
-                A2p = curBorder.B4;
-            } else {
-                drawTriangle(curBorder.segment.B, curBorder.segment.B1, curBorder.B3, color, border,
-                             border);
-                segment.B2 = curBorder.K3;
-                drawLineSegment(segment, color);
-                A1p = curBorder.B3;
-                A2p = curBorder.K3;
-            }
-        }
-
-        lineSegment lastSegment = calculateLineSegment(vertices[segments - 1], vertices[segments],
-                                                       w);
-        lastSegment.A1 = A1p;
-        lastSegment.A2 = A2p;
-        drawLineSegment(lastSegment, color);
-
+        tessellation(vertices, segments, w, color);
     } else {
-
         for (int i = 2; i <= segments + 1; ++i) {
             drawSegment(vertices[i - 2], vertices[i - 1], w / 2, color);
         }
@@ -210,8 +141,8 @@ void AwesomeNode::highlightTriangle(const Vec2 &A, const Vec2 &B, const Vec2 &C)
 }
 
 void
-AwesomeNode::drawDashDottedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize,
-                                const Color4F &color) {
+AwesomeNode::drawADashDottedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize,
+                                 const Color4F &color) {
     auto steps = (int) (from.distance(to) / (dashSize * 1.1));
     Vec2 v(to.x - from.x, to.y - from.y);
     v.normalize();
@@ -234,8 +165,8 @@ AwesomeNode::drawDashDottedLine(const Vec2 &from, const Vec2 &to, float w, float
     drawALine(A, to, w, color);
 }
 
-void AwesomeNode::drawDashedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize,
-                                 const Color4F &color) {
+void AwesomeNode::drawADashedLine(const Vec2 &from, const Vec2 &to, float w, float dashSize,
+                                  const Color4F &color) {
     auto steps = (int) (from.distance(to) / (dashSize * 1.3));
     Vec2 v(to.x - from.x, to.y - from.y);
     v.normalize();
@@ -259,96 +190,27 @@ void
 AwesomeNode::drawAFilledCardinalSpline(PointArray *config, float tension, unsigned int segments,
                                        float w, const Color4F &color, float bottomY,
                                        const Color4F &fill) {
-    auto *vertices = new(std::nothrow) Vec2[segments + 1];
-    if (!vertices)
-        return;
-
-    ssize_t p;
-    float lt;
-    float deltaT = 1.0f / (config->count() - 1);
-
-    for (unsigned int i = 0; i < segments + 1; i++) {
-
-        float dt = (float) i / segments;
-
-        // border
-        if (dt == 1) {
-            p = config->count() - 1;
-            lt = 1;
-        } else {
-            p = (ssize_t) (dt / deltaT);
-            lt = (dt - deltaT * (float) p) / deltaT;
-        }
-
-        // Interpolate
-        const Vec2 &pp0 = config->getControlPointAtIndex(p - 1);
-        const Vec2 &pp1 = config->getControlPointAtIndex(p + 0);
-        const Vec2 &pp2 = config->getControlPointAtIndex(p + 1);
-        const Vec2 &pp3 = config->getControlPointAtIndex(p + 2);
-
-        Vec2 newPos = ccCardinalSplineAt(pp0, pp1, pp2, pp3, tension, lt);
-        vertices[i].x = newPos.x;
-        vertices[i].y = newPos.y;
-    }
+    auto *vertices = calculateVertices(config, tension, segments);
 
     if (w < LINE_SIZE_THRESHOLD) {
-        Vec2 A1p, A2p;
-        {
-            lineSegment prevBorder = calculateLineSegment(vertices[0], vertices[1], w);
-            A1p = prevBorder.A1;
-            A2p = prevBorder.A2;
-        }
 
         for (int i = 2; i <= segments; ++i) {
-            lineJoint curBorder = calculateLineJoint(
-                    vertices[i - 2], vertices[i - 1], vertices[i], w);
-            drawSolidRect(curBorder.segment.A, curBorder.segment.B,
-                          Vec2(curBorder.segment.B.x, bottomY),
-                          Vec2(curBorder.segment.A.x, bottomY), fill);
+            lineJoint cur = calculateLineJoint(vertices[i - 2], vertices[i - 1], vertices[i], w);
+            drawSolidRect(cur.segment.A, cur.segment.B,
+                          Vec2(cur.segment.B.x, bottomY),
+                          Vec2(cur.segment.A.x, bottomY), fill);
         }
 
-        for (int i = 2; i <= segments; ++i) {
-            lineJoint curBorder = calculateLineJoint(
-                    vertices[i - 2], vertices[i - 1], vertices[i], w);
+        lineSegment last = calculateLineSegment(vertices[segments - 1], vertices[segments], w);
+        drawSolidRect(last.A, last.B, Vec2(last.B.x, bottomY), Vec2(last.A.x, bottomY), fill);
 
-            lineSegment segment = curBorder.segment;
-            segment.A1 = A1p;
-            segment.A2 = A2p;
-
-            Color4F border(color);
-            border.a = 0;
-
-            if (curBorder.up) {
-                drawTriangle(curBorder.segment.B, curBorder.segment.B2, curBorder.B4, color, border,
-                             border);
-                segment.B1 = curBorder.K;
-                drawLineSegment(segment, color);
-                A1p = curBorder.K;
-                A2p = curBorder.B4;
-            } else {
-                drawTriangle(curBorder.segment.B, curBorder.segment.B1, curBorder.B3, color, border,
-                             border);
-                segment.B2 = curBorder.K3;
-                drawLineSegment(segment, color);
-                A1p = curBorder.B3;
-                A2p = curBorder.K3;
-            }
-        }
-
-        lineSegment lastSegment = calculateLineSegment(vertices[segments - 1], vertices[segments],
-                                                       w);
-        lastSegment.A1 = A1p;
-        lastSegment.A2 = A2p;
-        drawSolidRect(lastSegment.A, lastSegment.B,
-                      Vec2(lastSegment.B.x, bottomY),
-                      Vec2(lastSegment.A.x, bottomY), fill);
-        drawLineSegment(lastSegment, color);
+        tessellation(vertices, segments, w, color);
 
     } else {
 
         for (int i = 2; i <= segments + 1; ++i) {
-            drawSolidRect(Vec2(vertices[i - 2].x, vertices[i - 2].y ),
-                          Vec2(vertices[i - 1].x, vertices[i - 1].y ),
+            drawSolidRect(Vec2(vertices[i - 2].x, vertices[i - 2].y),
+                          Vec2(vertices[i - 1].x, vertices[i - 1].y),
                           Vec2(vertices[i - 1].x, bottomY),
                           Vec2(vertices[i - 2].x, bottomY), fill);
         }
@@ -371,68 +233,85 @@ AwesomeNode::drawAFilledCardinalSpline(PointArray *config, float tension, unsign
 
 void AwesomeNode::drawSolidRect(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3, const Vec2 &p4,
                                 const Color4F &color) {
-    Vec2 vertices[] = {
-            p1,
-            p2,
-            p3,
-            p4
-    };
-
-    drawSolidPoly(vertices, 4, color );
+    Vec2 vertices[] = {p1, p2, p3, p4};
+    drawSolidPoly(vertices, 4, color);
 }
 
 void AwesomeNode::drawSolidRect(const Vec2 &origin, const Vec2 &destination, const Color4F &color) {
     DrawNode::drawSolidRect(origin, destination, color);
 }
 
+Vec2 *AwesomeNode::calculateVertices(PointArray *config, float tension, unsigned int segments) {
+    auto *vertices = new Vec2[segments + 1];
+    // copied from DrawNode cardinal splines with fix for border
+    ssize_t p;
+    float lt;
+    float deltaT = 1.0f / (config->count() - 1);
 
-static inline Vec2 v2f(float x, float y) {
-    Vec2 ret(x, y);
-    return ret;
+    for (unsigned int i = 0; i < segments + 1; i++) {
+        float dt = (float) i / segments;
+        // border
+        if (dt == 1) {
+            p = config->count() - 1;
+            lt = 1;
+        } else {
+            p = (ssize_t) (dt / deltaT);
+            lt = (dt - deltaT * (float) p) / deltaT;
+        }
+        // Interpolate
+        const Vec2 &pp0 = config->getControlPointAtIndex(p - 1);
+        const Vec2 &pp1 = config->getControlPointAtIndex(p + 0);
+        const Vec2 &pp2 = config->getControlPointAtIndex(p + 1);
+        const Vec2 &pp3 = config->getControlPointAtIndex(p + 2);
+
+        Vec2 newPos = ccCardinalSplineAt(pp0, pp1, pp2, pp3, tension, lt);
+        vertices[i].x = newPos.x;
+        vertices[i].y = newPos.y;
+    }
+
+    return vertices;
 }
 
-static inline Vec2 v2fadd(const Vec2 &v0, const Vec2 &v1) {
-    return v2f(v0.x + v1.x, v0.y + v1.y);
-}
+void
+AwesomeNode::tessellation(Vec2 *vertices, unsigned int segments, float w, const Color4F &color) {
+    Vec2 A1p, A2p;
+    {
+        lineSegment prev = calculateLineSegment(vertices[0], vertices[1], w);
+        A1p = prev.A1;
+        A2p = prev.A2;
+    }
 
-static inline Vec2 v2fsub(const Vec2 &v0, const Vec2 &v1) {
-    return v2f(v0.x - v1.x, v0.y - v1.y);
-}
+    for (int i = 2; i <= segments; ++i) {
+        lineJoint cur = calculateLineJoint(
+                vertices[i - 2], vertices[i - 1], vertices[i], w);
 
-static inline Vec2 v2fmult(const Vec2 &v, float s) {
-    return v2f(v.x * s, v.y * s);
-}
+        lineSegment segment = cur.segment;
+        segment.A1 = A1p;
+        segment.A2 = A2p;
 
-static inline Vec2 v2fperp(const Vec2 &p0) {
-    return v2f(-p0.y, p0.x);
-}
+        Color4F border(color);
+        border.a = 0;
 
-static inline Vec2 v2fneg(const Vec2 &p0) {
-    return v2f(-p0.x, -p0.y);
-}
+        if (cur.up) {
+            drawTriangle(cur.segment.B, cur.segment.B2, cur.B4, color, border,
+                         border);
+            segment.B1 = cur.K;
+            drawLineSegment(segment, color);
+            A1p = cur.K;
+            A2p = cur.B4;
+        } else {
+            drawTriangle(cur.segment.B, cur.segment.B1, cur.B3, color, border,
+                         border);
+            segment.B2 = cur.K3;
+            drawLineSegment(segment, color);
+            A1p = cur.B3;
+            A2p = cur.K3;
+        }
+    }
 
-static inline float v2fdot(const Vec2 &p0, const Vec2 &p1) {
-    return p0.x * p1.x + p0.y * p1.y;
-}
+    lineSegment last = calculateLineSegment(vertices[segments - 1], vertices[segments], w);
+    last.A1 = A1p;
+    last.A2 = A2p;
 
-static inline Vec2 v2fnormalize(const Vec2 &p) {
-    Vec2 r(p.x, p.y);
-    r.normalize();
-    return v2f(r.x, r.y);
-}
-
-static inline Vec2 __v2f(const Vec2 &v) {
-//#ifdef __LP64__
-    return v2f(v.x, v.y);
-// #else
-//     return * ((Vec2*) &v);
-// #endif
-}
-
-static inline Tex2F __t(const Vec2 &v) {
-    return *(Tex2F *) &v;
-}
-
-V2F_C4B_T2F __tct(float x, float y, Color4B color, float texx, float texy) {
-    return V2F_C4B_T2F{Vec2(x, y), color, Tex2F(texx, texy)};
+    drawLineSegment(last, color);
 }
