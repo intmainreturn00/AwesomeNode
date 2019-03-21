@@ -23,12 +23,13 @@ private:
     PointArray *pts = nullptr;
     PointArray *pts2 = nullptr;
     AwesomeNode *node = nullptr;
-    AwesomeNode *background = nullptr;
 
     Size screen;
-    Vec2 origin, center, quarter, sixth;
+    Vec2 origin, center, sixth;
     float defY, defY2, dev;
-    int n;
+    const int n = 50;
+    const int grid = 10;
+    const int margin = 20;
 
     const Color4F BLACK = Color4F(Color4B(21, 23, 33, 255));
     const Color4F GREY = Color4F(Color4B(34, 38, 50, 255));
@@ -36,7 +37,6 @@ private:
     const Color4F GREEN_SH = Color4F(Color4B(27, 67, 63, 255));
     const Color4F RED = Color4F(Color4B(214, 41, 84, 255));
     const Color4F RED_SH = Color4F(Color4B(68, 27, 45, 255));
-
 
 };
 
