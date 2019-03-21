@@ -3,6 +3,8 @@
 #include "cocos2d.h"
 #include "AwesomeNode.h"
 
+USING_NS_CC;
+
 class Sample : public cocos2d::Scene {
 public:
     static cocos2d::Scene *createScene();

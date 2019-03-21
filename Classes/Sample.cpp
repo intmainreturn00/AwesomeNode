@@ -1,7 +1,6 @@
 #include "Sample.h"
 #include "AwesomeNode.h"
 
-USING_NS_CC;
 
 Scene *Sample::createScene() {
     return Sample::create();

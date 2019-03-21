@@ -2,6 +2,7 @@
 
 const int AwesomeNode::LINE_SIZE_THRESHOLD = 4;
 
+USING_NS_CC;
 
 bool AwesomeNode::init() {
     return DrawNode::init();
