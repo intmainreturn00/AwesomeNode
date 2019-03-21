@@ -275,6 +275,9 @@ Vec2 *AwesomeNode::calculateVertices(PointArray *config, float tension, unsigned
 
 void
 AwesomeNode::tessellation(Vec2 *vertices, unsigned int segments, float w, const Color4F &color) {
+    Color4F border(color);
+    border.a = 0;
+
     Vec2 A1p, A2p;
     {
         lineSegment prev = calculateLineSegment(vertices[0], vertices[1], w);
@@ -283,26 +286,20 @@ AwesomeNode::tessellation(Vec2 *vertices, unsigned int segments, float w, const 
     }
 
     for (int i = 2; i <= segments; ++i) {
-        lineJoint cur = calculateLineJoint(
-                vertices[i - 2], vertices[i - 1], vertices[i], w);
+        lineJoint cur = calculateLineJoint(vertices[i - 2], vertices[i - 1], vertices[i], w);
 
         lineSegment segment = cur.segment;
         segment.A1 = A1p;
         segment.A2 = A2p;
 
-        Color4F border(color);
-        border.a = 0;
-
         if (cur.up) {
-            drawTriangle(cur.segment.B, cur.segment.B2, cur.B4, color, border,
-                         border);
+            drawTriangle(cur.segment.B, cur.segment.B2, cur.B4, color, border, border);
             segment.B1 = cur.K;
             drawLineSegment(segment, color);
             A1p = cur.K;
             A2p = cur.B4;
         } else {
-            drawTriangle(cur.segment.B, cur.segment.B1, cur.B3, color, border,
-                         border);
+            drawTriangle(cur.segment.B, cur.segment.B1, cur.B3, color, border, border);
             segment.B2 = cur.K3;
             drawLineSegment(segment, color);
             A1p = cur.B3;
