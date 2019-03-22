@@ -79,6 +79,7 @@ when DrawNode sets the texture offsets at `drawSegment`.
 We can reuse such primitive inside cardinal splines and draw curves with segments instead of lines:
 ![](awesome%20node/A7B94B8C-0299-4BC7-8B0C-120650A875E7.png)
 ![](awesome%20node/2509EAD6-D234-4231-8053-B9DE00928E53.png)
+
 I’ve also fix the [bug at cardinal splines math](https://discuss.cocos2d-x.org/t/catmull-rom-cardinal-spline-interpolation-problem/4586), which is apparently been there since the beginning of `DrawNode`.
 
 If you zoom up this images, you would see that at large widths we’ve got good results, but at thin lines there are still some artefacts. 
