@@ -57,6 +57,7 @@ for (int i = 0; i < pts->count(); ++i) {
 
 <img src="awesome%20node/5BC656C4-EB97-4B0D-8B8C-4D442102EBF1.png" width="500">
 this picture has following artefacts:
+
 1. stepped curve borders (aliasing)
 2. some cut holes inside line.
 
