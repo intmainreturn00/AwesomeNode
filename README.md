@@ -1,6 +1,11 @@
 # awesome node
 Cocos2d-x tessellation library for drawing smooth anti-aliased curves.
+
+Make drawing great again!
 ![](awesome%20node/2019-03-21%2004.50.23.jpg)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<img src="https://img.shields.io/badge/made%20with-kotlin-blue.svg" alt="made with Cocos2dx">
 
 # Setup
 Just grab `AwesomeNode.h` and `AwesomeNode.cpp` into your cocos2d-x based project and you’re all set! (`AwesomeNode` don’t expose any cocos namespaces to global scope).
@@ -10,15 +15,19 @@ at `Android.mk` on android. Projects for Android Studio and MSVC are also provid
 
 # Usage
 Initialise the node and add it to scene..
-`auto node = AwesomeNode::create();`
-`addChild(node);`
+```cpp
+auto node = AwesomeNode::create();
+addChild(node);
+```
 …and you can start drawing.
 
 Given that `w` - is the line thickness you want and `pts` is cocos `PointArray` you can do the following:
 
-`drawALine(A, B, w, Color4F::GREEN);`
-`node->drawACardinalSpline(pts, 0.5, 360, w, Color4F::GREEN);`
-`node->drawAFilledCardinalSpline(pts, 0.5, 360, w, Color4F::GREEN, bottom, Color4F::RED);`
+```cpp
+drawALine(A, B, w, Color4F::GREEN);
+node->drawACardinalSpline(pts, 0.5, 360, w, Color4F::GREEN);
+node->drawAFilledCardinalSpline(pts, 0.5, 360, w, Color4F::GREEN, bottom, Color4F::RED);
+```
 
 last one generate curve with color filling from curve to the given Y level, like you can see at sample. 
 
@@ -27,8 +36,9 @@ Also you can draw a triangle (`drawTriangle`) with each vertex can has its own c
 Simple implementation for dashed (`drawADashedLine`) and dash-dotted (`drawADashDottedLine`) lines are also included.
 
 Uncomment `#define AWESOMEDEBUG` to see tessellation highlights. 
-![](awesome%20node/1AD38AD9-90C0-4973-B5A2-8DD9F018231A.png)
+<img src="awesome%20node/1AD38AD9-90C0-4973-B5A2-8DD9F018231A.png" width="500">
 
+If you’d like the work, star this repo ⭐️ or you can [buy me a cup of coffee](http://ko-fi.com/intmainreturn00) ☕️
 
 # Motivation
 It’s all started from my humble attempts to draw some lines with cocos2d-x. 
@@ -37,12 +47,15 @@ You can partly track down my research after that from [this topic](https://discu
 OpenGL is lacking ability to draw curves with arbitrary thickness and even with different antialiasing techniques, which is more affordable for desktops rather than for mobile devices, can’t get the work done. In native development we can use [Skia](https://skia.org/), which [implement](https://github.com/google/skia/blob/master/src/core/SkScan_AAAPath.cpp) tricky AA solution for paths, but cocos2d-x drawing primitives dose not include such functionality. You can read more about different approaches at the Link section below.
 
 With standard `DrawNode`we can draw something like this:
-`node = DrawNode::create(9);`
-`node->drawCardinalSpline(pts, tension, segments, Color4F::RED);`
-`for (int i = 0; i < pts->count(); ++i) {`
-`    node->drawPoint(pts->getControlPointAtIndex(i), 10, Color4F::BLUE);`
-`}`
-![](awesome%20node/5BC656C4-EB97-4B0D-8B8C-4D442102EBF1.png)
+```cpp
+node = DrawNode::create(9);
+node->drawCardinalSpline(pts, tension, segments, Color4F::RED);
+for (int i = 0; i < pts->count(); ++i) {
+    node->drawPoint(pts->getControlPointAtIndex(i), 10, Color4F::BLUE);
+}
+```
+
+<img src="awesome%20node/5BC656C4-EB97-4B0D-8B8C-4D442102EBF1.png" width="500">
 this picture has following artefacts:
 1. stepped curve borders (aliasing)
 2. some cut holes inside line.
@@ -58,7 +71,9 @@ I could link to libskia on android, make some path objects on skia side (skia wi
 Playing with shaders and DrawNode is terra incognito (If you know at least one non trivial and at least compilable solution, please, send me a link). After some experiments I’ve found the only one thing which cocos draws strangely smooth - segment. 
 ![](awesome%20node/A066FE00-DEC3-492A-8810-388AB795CF06.png)
 I highlight geometry for you. As you can see, it is drawn from 6 triangles and all the magic happens at this line of the fragment shader:
-`gl_FragColor = v_color*smoothstep(0.0, 0.1, 1.0 - length(v_texcoord));`
+```GLSL
+gl_FragColor = v_color*smoothstep(0.0, 0.1, 1.0 - length(v_texcoord));
+```
 when DrawNode sets the texture offsets at `drawSegment`.
 
 We can reuse such primitive inside cardinal splines and draw curves with segments instead of lines:
