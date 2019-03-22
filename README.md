@@ -5,7 +5,7 @@ Make drawing great again!
 ![](awesome%20node/2019-03-21%2004.50.23.jpg)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-<img src="https://img.shields.io/badge/made%20with-kotlin-blue.svg" alt="made with Cocos2dx">
+<img src="https://img.shields.io/badge/made%20with-cocos2dx-blue.svg" alt="made with Cocos2dx">
 
 If you’d like the work, star this repo ⭐️ or you can [buy me a cup of coffee](http://ko-fi.com/intmainreturn00) ☕️
 
