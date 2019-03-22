@@ -7,6 +7,8 @@ Make drawing great again!
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <img src="https://img.shields.io/badge/made%20with-kotlin-blue.svg" alt="made with Cocos2dx">
 
+If you’d like the work, star this repo ⭐️ or you can [buy me a cup of coffee](http://ko-fi.com/intmainreturn00) ☕️
+
 # Setup
 Just grab `AwesomeNode.h` and `AwesomeNode.cpp` into your cocos2d-x based project and you’re all set! (`AwesomeNode` don’t expose any cocos namespaces to global scope).
 
@@ -37,8 +39,6 @@ Simple implementation for dashed (`drawADashedLine`) and dash-dotted (`drawADash
 
 Uncomment `#define AWESOMEDEBUG` to see tessellation highlights. 
 <img src="awesome%20node/1AD38AD9-90C0-4973-B5A2-8DD9F018231A.png" width="500">
-
-If you’d like the work, star this repo ⭐️ or you can [buy me a cup of coffee](http://ko-fi.com/intmainreturn00) ☕️
 
 # Motivation
 It’s all started from my humble attempts to draw some lines with cocos2d-x. 
