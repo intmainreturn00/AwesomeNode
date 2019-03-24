@@ -98,6 +98,8 @@ Combining both approach we’ll have the results you can see at the header of th
 # Future plans
 I’ve also planned to add the ability to do color and thickness gradients in the future if someone needs it.
 
+[Metal-backend](http://discuss.cocos2d-x.org/t/progress-of-graphics-backend-integration/44671/32) currently doesn't work
+
 # Links
 * [Drawing Lines is Hard](https://mattdesl.svbtle.com/drawing-lines-is-hard)
 * [Drawing Antialiased Lines with OpenGL](https://blog.mapbox.com/drawing-antialiased-lines-with-opengl-8766f34192dc)
