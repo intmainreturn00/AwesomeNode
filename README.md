@@ -9,6 +9,7 @@ Make drawing great again!
 ![GitHub stars](https://img.shields.io/github/stars/intmainreturn00/AwesomeNode.svg?style=social)
 
 You can read about implementation details at my [Medium Post.](https://medium.com/@intmainreturn00/drawing-smooth-lines-with-cocos2dx-d057c41b8af2)
+
 If you’d like the work, star this repo ⭐️ or you can [buy me a cup of coffee](http://ko-fi.com/intmainreturn00) ☕️
 
 # Setup
