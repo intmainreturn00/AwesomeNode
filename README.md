@@ -47,16 +47,3 @@ Uncomment `#define AWESOMEDEBUG` to see tessellation highlights.
 I’ve also planned to add the ability to do color and thickness gradients in the future if someone needs it.
 
 [Metal-backend](http://discuss.cocos2d-x.org/t/progress-of-graphics-backend-integration/44671/32) currently doesn't work
-
-# Links
-* [Drawing Lines is Hard](https://mattdesl.svbtle.com/drawing-lines-is-hard)
-* [Drawing Antialiased Lines with OpenGL](https://blog.mapbox.com/drawing-antialiased-lines-with-opengl-8766f34192dc)
-* [Vase](http://tyt2y3.github.io/vaser-web/) - tried. Even with pretty complex geometry can’t solve [some issues](https://discuss.cocos2d-x.org/uploads/default/original/3X/6/9/693b2c2f5d6282618d53e7a6900a2fb68c463089.png)
-* [Antialiasing](http://discuss.cocos2d-x.org/t/antialiasing/1360/3) . Suggestion to use open gl attribute which as far as I know exist only at desktop. not in mobile devices. and link, which don’t exist anymore.
-* [CCDrawNode Antialiasing problem](http://discuss.cocos2d-x.org/t/ccdrawnode-antialiasing-problem/7916/3)  all the mentioned previously methods (CCRenderTexture, smoothstep, etc). has very small effect. Maybe you can handle just lines with it, but not curves or circles.
-* [CCDrawNode Antialiasing problem](http://discuss.cocos2d-x.org/t/ccdrawnode-antialiasing-problem/13970)  unanswered. lost. wasted.
-* [Cocos2d-x v3 Anti-Aliasing for Primitives](http://discuss.cocos2d-x.org/t/cocos2d-x-v3-anti-aliasing-for-primitives/20548)  same solutions. same results.
-* [Draw circle with strong border](http://discuss.cocos2d-x.org/t/draw-circle-with-strong-border/14827)  same problem - no help.
-* [DrawNode anti-aliasing solution](http://discuss.cocos2d-x.org/t/drawnode-anti-aliasing-solution/20651)  nope. not a solution. really. or do I do something wrong?
-* [How to draw anti-aliased line in cocos2d-x for android games?](http://discuss.cocos2d-x.org/t/how-to-draw-anti-aliased-line-in-cocos2d-x-for-android-games/12872)  suggested again to use not existed at openglES method and then smoothstep. arrrggghhh!
-*  [Anti-Grain Geometry (AGG) 49](http://www.antigrain.com/doc/introduction/introduction.agdoc.html#toc0002) Try out its android app. And its aliased at my nexus device! WTF? Antialiased anti-artifacts library demo consist of aliased graphics??! Arggghh.
