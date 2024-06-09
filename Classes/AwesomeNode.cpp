@@ -16,16 +16,19 @@ void AwesomeNode::drawTriangle(const Vec2 &p1, const Vec2 &p2, const Vec2 &p3,
     unsigned int vertex_count = 3;
     ensureCapacity(vertex_count);
 
-    V2F_C4B_T2F a = {Vec2(p1.x, p1.y), Color4B(color1), Tex2F(0.0, 0.0)};
-    V2F_C4B_T2F b = {Vec2(p2.x, p2.y), Color4B(color2), Tex2F(0.0, 0.0)};
-    V2F_C4B_T2F c = {Vec2(p3.x, p3.y), Color4B(color3), Tex2F(0.0, 0.0)};
+    cocos2d::V2F_C4B_T2F a = {p1, color1, cocos2d::Tex2F(0.0, 0.0)};
+    cocos2d::V2F_C4B_T2F b = {p2, color2, cocos2d::Tex2F(0.0, 0.0)};
+    cocos2d::V2F_C4B_T2F c = {p3, color3, cocos2d::Tex2F(0.0, 0.0)};
 
-    auto *triangles = (V2F_C4B_T2F_Triangle *) (_buffer + _bufferCount);
-    V2F_C4B_T2F_Triangle triangle = {a, b, c};
+    cocos2d::V2F_C4B_T2F_Triangle* triangles = (cocos2d::V2F_C4B_T2F_Triangle*)(_bufferTriangle + _bufferCountTriangle);
+    cocos2d::V2F_C4B_T2F_Triangle triangle = {a, b, c};
     triangles[0] = triangle;
 
-    _bufferCount += vertex_count;
-    _dirty = true;
+    _customCommandTriangle.updateVertexBuffer(triangles, _bufferCountTriangle * sizeof(cocos2d::V2F_C4B_T2F),
+                                              vertex_count * sizeof(cocos2d::V2F_C4B_T2F));
+    _bufferCountTriangle += vertex_count;
+    _dirtyTriangle = true;
+    _customCommandTriangle.setVertexDrawInfo(0, _bufferCountTriangle);
 
 #ifdef AWESOMEDEBUG
     highlightTriangle(p1, p2, p3);
