@@ -43,8 +43,6 @@ Uncomment `#define AWESOMEDEBUG` to see tessellation highlights.
 
 <img src="awesome%20node/1AD38AD9-90C0-4973-B5A2-8DD9F018231A.png" width="300">
 
----
-
 [Metal-backend](http://discuss.cocos2d-x.org/t/progress-of-graphics-backend-integration/44671/32) currently doesn't work
 
 [coffee](http://ko-fi.com/intmainreturn00) ☕️
