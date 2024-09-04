@@ -2,15 +2,14 @@
 Cocos2d-x tessellation library for drawing smooth anti-aliased curves.
 
 Make drawing great again!
-![](awesome%20node/2019-03-21%2004.50.23.jpg)
+
+<img src="awesome%20node/2019-03-21%2004.50.23.jpg" width="300" />
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <img src="https://img.shields.io/badge/made%20with-cocos2dx-blue.svg" alt="made with Cocos2dx">
 ![GitHub stars](https://img.shields.io/github/stars/intmainreturn00/AwesomeNode.svg?style=social)
 
-You can find implementation details at my [Medium Post](https://medium.com/@intmainreturn00/drawing-smooth-lines-with-cocos2dx-d057c41b8af2) <img src="https://github.com/Medium/medium-logos/blob/master/monogram/Monogram.png" width="20">
-
-If you’d like the work, star this repo ⭐️ or you can [buy me a cup of coffee](http://ko-fi.com/intmainreturn00) ☕️
+Implementation details [Medium Post](https://medium.com/@intmainreturn00/drawing-smooth-lines-with-cocos2dx-d057c41b8af2)
 
 # Setup
 Just grab `AwesomeNode.h` and `AwesomeNode.cpp` into your cocos2d-x based project and you’re all set! (`AwesomeNode` don’t expose any cocos namespaces to global scope).
@@ -41,10 +40,9 @@ Also you can draw a triangle (`drawTriangle`) with each vertex can has its own c
 Simple implementation for dashed (`drawADashedLine`) and dash-dotted (`drawADashDottedLine`) lines are also included.
 
 Uncomment `#define AWESOMEDEBUG` to see tessellation highlights. 
-<img src="awesome%20node/1AD38AD9-90C0-4973-B5A2-8DD9F018231A.png" width="500">
 
-
-# Future plans
-I’ve also planned to add the ability to do color and thickness gradients in the future if someone needs it.
+<img src="awesome%20node/1AD38AD9-90C0-4973-B5A2-8DD9F018231A.png" width="300">
 
 [Metal-backend](http://discuss.cocos2d-x.org/t/progress-of-graphics-backend-integration/44671/32) currently doesn't work
+
+[coffee](http://ko-fi.com/intmainreturn00) ☕️
